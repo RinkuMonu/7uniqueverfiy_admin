@@ -1,0 +1,14 @@
+.avatar.avatar-md svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.card.custom-card .card-body
+ {
+    padding: 1rem;
+    color: #222f36;
+}
+
+
+.brandorange-bg-light {
+  background-color: #fde8df;
+}

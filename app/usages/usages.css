@@ -1,0 +1,269 @@
+.usage-container {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 2rem;
+}
+.header{
+  display: flex;
+  justify-content: space-between;
+}
+.usage-header {
+
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  justify-content: space-between;
+}
+
+.usage-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-item label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+}
+
+.filter-item input {
+  padding: 8px;
+  width: 350px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.export-btn {
+
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 10px;
+  cursor: pointer;
+  height: 38px;
+}
+
+.export-btn:hover {
+  background-color: #1e4ed8;
+}
+
+.usage-table-container {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.usage-table thead {
+  background-color: #f3f4f6;
+  text-align: left;
+}
+
+.usage-table th,
+.usage-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.usage-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  padding: 16px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pagination-container {
+  margin-top: 20px;
+}
+.usage-page {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #497ce9;
+}
+
+.filter-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: flex-end;
+}
+
+.filter-full {
+  flex: 1 1 100%;
+}
+
+.filter-half {
+  flex: 1 1 calc(50% - 8px);
+}
+
+.filter-full label,
+.filter-half label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  gap: 6px;
+}
+
+.filter-full input,
+.filter-half input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.export-btn {
+  background: #618ce9;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background: #4464bb;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.usage-table thead {
+  background-color: #f3f4f6;
+  text-align: left;
+}
+
+.usage-table th{
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: bold;
+  background-color: #fbfbfc;
+}
+
+.usage-table td {
+  font-size: 13px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.usage-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.no-data {
+  text-align: center;
+  padding: 16px;
+  color: #c2c0c0;
+}
+
+.data {
+  text-align: center;
+  padding: 16px;
+  color: #4c4e52;
+  font-weight: 300;
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pagination-container {
+  margin-top: 20px;
+}

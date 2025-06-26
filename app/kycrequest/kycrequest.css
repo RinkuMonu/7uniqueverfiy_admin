@@ -1,0 +1,78 @@
+.filters {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 70px;
+  margin-top: 3px;
+}
+
+
+/* Each filter item vertical layout */
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.filter-item label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.icon {
+  margin-right: 8px;
+  font-size: 18px;
+  vertical-align: middle;
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Full row takes full width */
+.full-row {
+  width: 100%;
+}
+
+/* Half row takes ~48% width */
+.half-row {
+  width: 48%;
+}
+
+/* Container for two half-row filter items side by side */
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Style inputs/selects to fill their container */
+input[type="text"],
+input[type="date"],
+input[type="email"],
+select,
+input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+select:focus,
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 4px #2563eb;
+}

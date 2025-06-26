@@ -1,0 +1,276 @@
+/* Container with two equal halves */
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    background-image: url("/be1.png");
+    background-repeat: no-repeat;
+    height: 400px;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.login-container::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 499px;
+    bottom: 0;
+    height: 499px;
+    background: url('/login-bg1.e5522b3045a4abad.png') no-repeat;
+    background-size: 100%;
+}
+
+
+/* Left side - image */
+.login-left {
+    flex: 1;
+    border-radius:20px;
+    justify-content: center;
+    width: 400px;
+    height: 600px;
+    margin-right: 60px;
+
+}
+
+
+.login-left img {
+    width: 100%;
+    height: 650px;
+    object-fit: cover;
+    border-radius: 20px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+     margin-left: -40px;
+
+}
+
+/* Right side - white form */
+.login-right {
+    flex: 1;
+    border-radius: 20px ;
+    display: flex;
+    align-items: center;
+    width: 300px;
+    height: 600px;
+    justify-content: center;
+    background: white;
+    margin-top: 35px;
+    margin-left: 80px;
+    margin-right: -49px;
+    position: relative;
+
+
+
+}
+
+
+.login-right::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 103px;
+    bottom: 0;
+    height: 103px;
+    background: url('/cipher_bg2.f25e2463607ce845.png')no-repeat;
+    background-size: 100%;
+}
+
+.login-dashboard {
+    margin-bottom: 10px !important;
+}
+
+.login-right::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 103px;
+    top: 0;
+    height: 103px;
+    background: url('/changeafter.png') no-repeat;
+    background-size: 100%;
+}
+
+/* The white box container for the forms */
+.login-box {
+    width: 300%;
+    max-width: 400px;
+    padding: 30px;
+    height: 500px;
+    border-radius: 8px;
+
+
+}
+
+/* Title with icon and text */
+.form-title {
+
+    font-size: 28px;
+    color: #4477b9;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+/* Input group for icon + input field */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-radius: 20px;
+}
+
+/* Input fields styling */
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 40px 12px 40px;
+    /* padding for icons */
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    border-radius: 20px;
+}
+
+/* Focus effect */
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #4477b9;
+    /* Indigo */
+    box-shadow: 0 0 5px rgba(79, 70, 229, 0.4);
+
+}
+
+/* Icons inside inputs */
+.input-group svg {
+    position: absolute;
+    left: 12px;
+    color: #999;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+/* Eye icon (show/hide password) */
+.eye-icon {
+    position: absolute;
+    right: 12px;
+    color: #666;
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+}
+
+/* Submit buttons */
+.btn-submit {
+    width: 100%;
+    background-color: #4477b9;
+    /* Indigo */
+    color: white;
+    padding: 14px 0;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 20px !important;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: rgb(71, 93, 134);
+}
+
+/* Bottom links container */
+.bottom-links {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Bottom links spans as clickable */
+.bottom-links span,
+.bottom-links p span {
+    color: #4477b9;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.3s ease;
+}
+
+.bottom-links span:hover,
+.bottom-links p span:hover {
+    text-decoration: underline;
+}
+
+/* Back button on forgot password */
+.back-btn {
+    background: none;
+    border: none;
+    color: #7396f8;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+    padding: 0;
+    text-align: left;
+    border-radius: 20px;
+}
+
+/* Select dropdown styling */
+.select-role {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: white url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
+    background-size: 16px 16px;
+    cursor: pointer;
+}
+
+/* Paragraph below register button */
+.bottom-links p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+/* Responsive - stack on smaller screens */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-left,
+    .login-right {
+        flex: none;
+        width: 100%;
+        height: 300px;
+        margin: 0px;
+ 
+    }
+
+    .login-box {
+        max-width: 100%;
+        height: 100%;
+        margin-bottom: 0;
+
+    }
+}
