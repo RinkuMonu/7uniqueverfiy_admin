@@ -116,7 +116,7 @@ const LoginPage = () => {
               <button className="btn-submit">Login</button>
               <div className="bottom-links">
                 <span onClick={() => setStep(1)}>Forgot Password?</span>
-                <span onClick={() => setShowLogin(false)}>Register</span>
+                <span onClick={() => setShowLogin(false)}>Registerr</span>
               </div>
             </form>
           )}
