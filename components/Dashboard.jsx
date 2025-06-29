@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Download, Calendar, Upload, ChevronDown, TrendingUp, TrendingDown } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
 
 
 
@@ -71,10 +72,10 @@ function Dashboard() {
                                 <div>
                                     <p className="text-sm text-gray-500">Total wallet</p>
                                     <h2 className="text-2xl font-semibold text-gray-900">{admin?.wallet?.mode?.production}</h2>
-                                    <a href="#" className="text-sm text-indigo-600 hover:underline">
+                                    <Link href="/wallet-topup" className="text-sm text-indigo-600 hover:underline">
                                         Total wallet
 
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div className="bg-indigo-100 brandorange-bg-light p-3 rounded-full">
                                     <span className="avatar avatar-md  brandorange-text avatar-rounded">
@@ -115,9 +116,9 @@ function Dashboard() {
                                     <h2 className="text-2xl font-semibold text-gray-900">
   {admin?.services?.length || 0}
 </h2>
-                                    <a href="#" className="text-sm text-indigo-600 hover:underline">
+                                    <Link href="/api-catalogue" className="text-sm text-indigo-600 hover:underline">
                                         View all API
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div className="bg-indigo-100 brandorange-bg-light p-3 rounded-full">
                                     <span className="avatar avatar-md  brandorange-text avatar-rounded">
@@ -132,11 +133,11 @@ function Dashboard() {
                         <div className="bg-white shadow-sm border rounded-lg p-4 ">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">Total Sales</p>
-                                    <h2 className="text-2xl font-semibold text-gray-900">32,981</h2>
-                                    <a href="#" className="text-sm text-indigo-600 hover:underline">
-                                        View all sales
-                                    </a>
+                                    <p className="text-sm text-gray-500">Total Api Catalogue</p>
+                                    <h2 className="text-2xl font-semibold text-gray-900">87</h2>
+                                    <Link href="/products-catalogue" className="text-sm text-indigo-600 hover:underline">
+                                        View all Catalogue
+                                    </Link>
                                 </div>
                                 <div className="bg-indigo-100 brandorange-bg-light p-3 rounded-full">
                                     <span className="avatar avatar-md  brandorange-text avatar-rounded">
@@ -158,7 +159,7 @@ function Dashboard() {
                               <div className='border-b-2 border-gray-100'>
                                  
                                     <div className="flex items-center justify-between p-4">
-                                    <h1 className="text-xl font-semibold text-gray-700">Visitors Report</h1>
+                                    <h1 className="text-xl font-semibold text-gray-700">API Report</h1>
                                     <Button variant="outline" className="bg-white text-gray-400  border-none">
                                         <span>Sort By</span>
                                         <ChevronDown className="w-4 h-4 ml-2" />
@@ -243,7 +244,7 @@ function Dashboard() {
                         <div className=" bg-white">
                            <div className='border-b-2 border-gray-100 '>
                              <div className="lg:flex items-center justify-between p-2 md:p-4">
-                                <h1 className="text-2xl font-semibold text-gray-900 ">Order Statistics</h1>
+                                <h1 className="text-2xl font-semibold text-gray-900 ">API Statistics</h1>
                                 <div className="md:flex items-center gap-4">
 
                                     <Button variant="outline" className="bg-grey200  text-gray-700 border-gray-300 mt-2 md:mt-0">
@@ -258,7 +259,7 @@ function Dashboard() {
                                 <div className="flex items-center gap-6">
                                     <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                                        <span className="text-sm text-gray-600">Delivered</span>
+                                        <span className="text-sm text-gray-600">Success</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -266,7 +267,7 @@ function Dashboard() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                        <span className="text-sm text-gray-600">Cancelled</span>
+                                        <span className="text-sm text-gray-600">Failed</span>
                                     </div>
                                 </div>
                             </div>

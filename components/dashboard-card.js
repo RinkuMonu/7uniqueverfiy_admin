@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { MainContext } from "@/app/context/context";
 import { fetchAdminDetails } from "@/app/redux/reducer/AdminSlice";
 import { Loader2 } from "lucide-react";
+import { title } from "process";
+import Swal from "sweetalert2";
+const swal = Swal;
+
 
 const ProductTabs = () => {
   const { tostymsg } = useContext(MainContext);
@@ -62,26 +66,42 @@ const ProductTabs = () => {
 
     paginate(filtered);
   };
+const handlePurchase = async (serviceId) => {
+  
+  try {
+    // Show SweetAlert confirmation first
+    const result = await swal.fire({
+      title: "Are you sure you want to buy this?",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    });
 
-  const handlePurchase = async (serviceId) => {
+    // Check if user confirmed
+    if (!result.isConfirmed) {
+      return; // User cancelled
+    }
+
     setLoading(true);
     setMessage(null);
-    try {
-      const { data } = await axiosInstance.post("/user/service-request", {
-        userId: admin._id,
-        serviceId,
-      });
 
-      setMessage({ type: "success", text: data.message });
-      dispatch(fetchAdminDetails());
-    } catch (error) {
-      const errMsg =
-        error?.response?.data?.message || "Purchase request failed.";
-      setMessage({ type: "error", text: errMsg });
-    } finally {
-      setLoading(false);
-    }
-  };
+    // API call
+    const { data } = await axiosInstance.post("/user/service-request", {
+      userId: admin._id,
+      serviceId,
+    });
+
+    setMessage({ type: "success", text: data.message });
+    dispatch(fetchAdminDetails());
+    toast.success(data.message || "Purchase successful!");
+  } catch (error) {
+    const errMsg = error?.response?.data?.message || "Purchase request failed.";
+    setMessage({ type: "error", text: errMsg });
+    toast.error(errMsg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     dispatch(fetchAdminDetails());
