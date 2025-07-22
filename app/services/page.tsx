@@ -252,7 +252,8 @@ export default function ServiceDynamicPage() {
                         borderRadius: '0.5rem',
                         transition: 'all 0.3s ease',
                         transform: 'scale(1)',
-                        alignSelf: 'flex-start'  // Align to top of container
+                        alignSelf: 'flex-start',  // Align to top of container
+                        maxWidth:'1000px'
                     }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.transform = 'scale(1.005)';
