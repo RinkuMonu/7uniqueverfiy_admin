@@ -9,7 +9,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FiTool, FiCheck, FiPackage } from 'react-icons/fi';
+import { FiTool, FiCheck, FiPackage, FiSettings } from 'react-icons/fi';
 import './assignservices.css'; // External CSS file
 
 export default function AssignServicesPage() {
@@ -17,6 +17,35 @@ export default function AssignServicesPage() {
     const [services, setServices] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState('');
     const [selectedServices, setSelectedServices] = useState([]);
+    const [showChargeModal, setShowChargeModal] = useState(false);
+    const [selectedApiInfo, setSelectedApiInfo] = useState({ _id: '', name: '', charge: 0 });
+    const [customCharge, setCustomCharge] = useState('');
+    const [customService, setCustomService] = useState([]);
+
+
+    const handleOpenChargeModal = (api) => {
+        setSelectedServices([api._id]);
+        setSelectedApiInfo({ _id: api._id, name: api.name, charge: api.charge });
+        setShowChargeModal(true);
+    };
+
+    const saveCharge = () => {
+        setCustomService((pre) => {
+            const updateData = [...pre]
+            const axistData = updateData.findIndex(data => data.service == selectedApiInfo._id);
+            if (axistData !== -1) {
+                updateData[axistData].customCharge = Number(customCharge)
+            } else {
+                updateData.push({
+                    service: selectedApiInfo._id,
+                    customCharge: Number(customCharge),
+                })
+            }
+            return updateData;
+        })
+        setShowChargeModal(false);
+        setCustomCharge('');
+    }
 
     useEffect(() => {
         fetchUsers();
@@ -54,12 +83,14 @@ export default function AssignServicesPage() {
         try {
             const res = await axiosInstance.post('/admin/assign-services', {
                 userId: selectedUserId,
-                services: selectedServices
+                services: selectedServices,
+                customCharge: customService
             });
             console.log(res);
 
             toast.success(res.data.message);
             setSelectedServices([]);
+            setCustomService([])
         } catch (err) {
             toast.error('Failed to assign services');
         }
@@ -80,7 +111,7 @@ export default function AssignServicesPage() {
         <div className="card custom-card ">
             <Card className="">
                 <div className='card-header'>
-                    <div className=" text-left flex " style={{"fontSize" :"1.1rem" , "fontWeight": "600"}}>
+                    <div className=" text-left flex " style={{ "fontSize": "1.1rem", "fontWeight": "600" }}>
                         <FiTool className=" me-1 mt-1" />
                         Assign Services
                     </div>
@@ -108,18 +139,70 @@ export default function AssignServicesPage() {
                         <label className="form-label">Select Services</label>
                         <div className="services-grid">
                             {services.map((service) => (
-                                <label key={service._id} className="service-item">
-                                    <Checkbox
-                                        checked={selectedServices.includes(service._id)}
-                                        onCheckedChange={() => toggleService(service._id)}
-                                        className='border-[#c3653d] brandorange-bg-light brandorange-text'
-                                    />
-                                    <span className="service-name">{service.name}</span>
-                                </label>
+                                < div key={service._id} className='flex items-center justify-between'>
+                                    <div>
+                                        <label className="service-item">
+                                            <Checkbox
+                                                checked={selectedServices.includes(service._id)}
+                                                onCheckedChange={() => toggleService(service._id)}
+                                                className='border-[#c3653d] brandorange-bg-light brandorange-text'
+                                            />
+                                            <span className="service-name">{service.name}</span>
+                                        </label>
+                                    </div>
+                                    <button className='pl-3' title="Custom Charge" onClick={() => handleOpenChargeModal(service)}>
+                                        <FiSettings className="icon-spacing" />
+                                    </button>
+                                </div>
                             ))}
                         </div>
-                        
                     </div>
+                    {showChargeModal && (
+                        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center">
+                            <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6 relative">
+                                <button
+                                    className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-lg"
+                                    onClick={() => setShowChargeModal(false)}
+                                >
+                                    ×
+                                </button>
+                                <h2 className="text-xl font-semibold mb-4">Add Custom Charge</h2>
+
+                                <div className="mb-3">
+                                    <p className="text-sm text-gray-600"><strong>API Name:</strong> {selectedApiInfo.name}</p>
+                                    <p className="text-sm text-gray-600"><strong>Active Charge:</strong> ₹ {selectedApiInfo.charge}</p>
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium text-gray-700">Custom Charge (₹)</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border px-3 py-2 rounded outline-none focus:ring-2 focus:ring-orange-300"
+                                        value={customCharge}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                                setCustomCharge(value);
+                                            }
+                                        }}
+                                        placeholder="Enter custom charge"
+                                    />
+                                </div>
+
+                                <div className="flex justify-end">
+                                    <button
+                                        className="brandorange-bg-light brandorange-text px-3 py-1 rounded-md"
+                                        onClick={() => {
+                                            saveCharge()
+                                        }}
+                                    >
+                                        Save
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div className="action-buttons">
@@ -142,6 +225,6 @@ export default function AssignServicesPage() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }

@@ -14,12 +14,12 @@ import ServiceDynamicForm from "@/app/services/page";
 
 
 export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const { admin, token } = useSelector((state) => state.admin);
 
   // Full navigation list
   const navigationItems = [
-     {
+    {
       id: "dashboard",
       label: "Dashboard",
       icon: "bi bi-house", // Better for blog content
@@ -86,6 +86,13 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
       href: "/topup-request"
     },
     {
+      id: "api-request",
+      label: "API Requests",
+      icon: "bi bi-box-arrow-in-down", 
+      href: "/api-request"
+    },
+
+    {
       id: "services",
       label: "Services",
       icon: "bi bi-collection", // For a collection of services
@@ -144,10 +151,10 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
 
   // Role-based nav access config
   const roleBasedAccess = {
-    user: ["dashboard","products-catalogue", "wallet-ledger", "projects", "calendar", "vacations", "info-portal", "services", "user-topup"],
+    user: ["dashboard", "products-catalogue", "wallet-ledger", "projects", "calendar", "vacations", "info-portal", "services", "user-topup"],
     admin: [
-      "dashboard","products-catalogue", "projects", "calendar", "vacations", "info-portal",
-      "wallet-topup", "topup-request", "services", "all-user-report", "all-user-list", "KycRequest", "WalletBalance", "AssignServices", "contact", "blog"
+      "dashboard", "products-catalogue", "projects", "calendar", "vacations", "info-portal",
+      "wallet-topup", "topup-request", "services", "all-user-report", "all-user-list", "KycRequest", "WalletBalance", "AssignServices", "contact", "blog", "api-request"
     ]
   };
   const dispatch = useDispatch();
@@ -228,7 +235,7 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
       <>
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" onClick={() => onToggle?.(false)} />
         <aside className="fixed left-0 top-0 bottom-0 z-50 w-80 bg-white shadow-md">
-       <div className="h-16 px-6 border-b border-blue-100">
+          <div className="h-16 px-6 border-b border-blue-100">
             <div className="">
               <div className="w-full bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg ">
                 <Image src={logo} width={20} height={20} alt="logo" className="mx-auto" />
@@ -242,9 +249,40 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
               <i className="bi bi-x-lg text-gray-500"></i>
             </button>
           </div>
-             <div className="h-full flex flex-col px-4 py-6 overflow-hidden">
-              <nav className="space-y-1 flex-1 ">
-                {navItems.map((item) => (
+          <div className="h-full flex flex-col px-4 py-6 overflow-hidden">
+            <nav className="space-y-1 flex-1 ">
+              {navItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => handleNavClick(item)}
+                  className={cn(
+                    "group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all",
+                    item.isActive
+                      ? "bg-blue-50 brandcolor-text shadow-sm"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                >
+                  <i
+                    className={cn(
+                      item.icon,
+                      "mr-3 text-lg",
+                      item.isActive
+                        ? "brandcolor-text"
+                        : "text-gray-400 group-hover:text-gray-600"
+                    )}
+                  />
+                  <span className="truncate">{item.label}</span>
+                  {item.isActive && (
+                    <div className="ml-auto w-2 h-2 brandcolor-bg rounded-full"></div>
+                  )}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="pt-6 border-t border-gray-100 ">
+              <nav className="space-y-1">
+                {bottomNavItems.map((item) => (
                   <Link
                     key={item.id}
                     href={item.href}
@@ -266,42 +304,11 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
                       )}
                     />
                     <span className="truncate">{item.label}</span>
-                    {item.isActive && (
-                      <div className="ml-auto w-2 h-2 brandcolor-bg rounded-full"></div>
-                    )}
                   </Link>
                 ))}
               </nav>
-
-              <div className="pt-6 border-t border-gray-100 ">
-                <nav className="space-y-1">
-                  {bottomNavItems.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      onClick={() => handleNavClick(item)}
-                      className={cn(
-                        "group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all",
-                        item.isActive
-                          ? "bg-blue-50 brandcolor-text shadow-sm"
-                          : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                      )}
-                    >
-                      <i
-                        className={cn(
-                          item.icon,
-                          "mr-3 text-lg",
-                          item.isActive
-                            ? "brandcolor-text"
-                            : "text-gray-400 group-hover:text-gray-600"
-                        )}
-                      />
-                      <span className="truncate">{item.label}</span>
-                    </Link>
-                  ))}
-                </nav>
-              </div>
             </div>
+          </div>
           <div className="border-t border-gray-100 p-4">
             {renderUserProfile()}
           </div>
@@ -313,8 +320,8 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
   if (!isMobile) {
     return (
       <aside className={cn("fixed left-0 top-0 bottom-0 bg-white shadow-md transition-all z-30  border-gray-100", isOpen ? "w-60" : "w-20")}
-     >
-      <div className={cn("h-16  border-b border-gray-100", isOpen ? "" : "")}>
+      >
+        <div className={cn("h-16  border-b border-gray-100", isOpen ? "" : "")}>
           <div className="flex items-center h-16">
             {/* <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center"> */}
             <Image src={logo} width={100} height={100} alt="logo" className="mx-auto " />
@@ -328,7 +335,7 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
             )}
           </div>
         </div>
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           <div className={cn("py-6", isOpen ? "px-4" : "px-3")} style={{ height: "calc(100vh - 200px)" }}>
             <nav className="space-y-1">
               {navItems.map((item) =>
@@ -363,66 +370,66 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
                     )}
                   </Link>
                 ) : (
-    <div key={item.id} className="relative overflow-hidden scrollbar-hide">
-      {/* Check if any child is active */}
-      {(() => {
-        const hasActiveChild = item.children?.some(child => searchParams.get("id") === child.id);
+                  <div key={item.id} className="relative overflow-hidden scrollbar-hide">
+                    {/* Check if any child is active */}
+                    {(() => {
+                      const hasActiveChild = item.children?.some(child => searchParams.get("id") === child.id);
 
-        return (
-          <>
-            <div
-              onClick={() => toggleDropdown(item.id)}
-              className={cn(
-                "flex items-center gap-2 cursor-pointer rounded text-sm font-medium transition-all",
-                isOpen ? "px-3 py-2" : "p-2 justify-center",
-                item.id === openDropdownId || hasActiveChild
-                  ? "text-white text-sm font-bold brandcolor-bg shadow-sm"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              )}
-            >
-              <i
-                className={cn(
-                  item.icon,
-                  isOpen ? "mr-3" : "",
-                  item.id === openDropdownId || hasActiveChild ? "text-white" : "text-gray-400"
-                )}
-              />
-              {isOpen && <span className="flex-1 truncate">{item.label}</span>}
-              {isOpen && (
-                <i
-                  className={cn("bi", openDropdownId === item.id ? "bi-chevron-up" : "bi-chevron-down", "text-xs ml-auto")}
-                />
-              )}
-            </div>
+                      return (
+                        <>
+                          <div
+                            onClick={() => toggleDropdown(item.id)}
+                            className={cn(
+                              "flex items-center gap-2 cursor-pointer rounded text-sm font-medium transition-all",
+                              isOpen ? "px-3 py-2" : "p-2 justify-center",
+                              item.id === openDropdownId || hasActiveChild
+                                ? "text-white text-sm font-bold brandcolor-bg shadow-sm"
+                                : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                            )}
+                          >
+                            <i
+                              className={cn(
+                                item.icon,
+                                isOpen ? "mr-3" : "",
+                                item.id === openDropdownId || hasActiveChild ? "text-white" : "text-gray-400"
+                              )}
+                            />
+                            {isOpen && <span className="flex-1 truncate">{item.label}</span>}
+                            {isOpen && (
+                              <i
+                                className={cn("bi", openDropdownId === item.id ? "bi-chevron-up" : "bi-chevron-down", "text-xs ml-auto")}
+                              />
+                            )}
+                          </div>
 
-            {openDropdownId === item.id && isOpen && (
-              <div className="relative ml-6 mt-1 space-y-1">
-                <div className="absolute left-0 top-0 h-full w-[3px] bg-gray-300" />
+                          {openDropdownId === item.id && isOpen && (
+                            <div className="relative ml-6 mt-1 space-y-1">
+                              <div className="absolute left-0 top-0 h-full w-[3px] bg-gray-300" />
 
-                {item.children.map((child) => {
-                  const isActive = searchParams.get("id") === child.id;
-                  return (
-                    <Link
-                      key={child.id}
-                      href={`/services?id=${child.id}`}
-                      className={`relative block pl-4 py-2 text-sm font-medium capitalize
+                              {item.children.map((child) => {
+                                const isActive = searchParams.get("id") === child.id;
+                                return (
+                                  <Link
+                                    key={child.id}
+                                    href={`/services?id=${child.id}`}
+                                    className={`relative block pl-4 py-2 text-sm font-medium capitalize
                                   ${isActive ? "brandcolor-text" : "text-gray-600"}`}
-                    >
-                      {isActive && (
-                        <span className="absolute left-0 top-0 h-full w-[3px] brandcolor-bg drop-shadow-[0_0_4px_rgba(9,51,60,0.9)]" />
-                      )}
-                      {child.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        );
-      })()}
-    </div>
-  )
-)}
+                                  >
+                                    {isActive && (
+                                      <span className="absolute left-0 top-0 h-full w-[3px] brandcolor-bg drop-shadow-[0_0_4px_rgba(9,51,60,0.9)]" />
+                                    )}
+                                    {child.label}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+                  </div>
+                )
+              )}
 
             </nav>
           </div>

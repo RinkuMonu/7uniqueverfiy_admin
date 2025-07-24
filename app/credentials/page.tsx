@@ -1,13 +1,18 @@
 "use client";
 
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CredentialsPage() {
   const { admin } = useSelector((state) => state.admin);
   const [isProd, setIsProd] = useState(false);
+  useEffect(
+    () => {
+      setIsProd(admin?.production?.jwtSecret ? true : false)
+    }, [admin]
+  )
 
-  const environment = isProd ? admin?.production : admin?.credentials;
+  const environment = !isProd ? admin?.production : admin?.credentials;
 
   const credentials = [
     {
@@ -33,12 +38,12 @@ export default function CredentialsPage() {
   };
 
   return (
-    <div style={{ padding: "20px",  margin: "0 auto" }}>
+    <div style={{ padding: "20px", margin: "0 auto" }}>
       <div style={{ display: "grid", gap: "24px" }}>
         {/* API Credentials Section */}
         <div className="card custom-card">
           <div
-          className="card-header lg:flex justify-between"
+            className="card-header lg:flex justify-between"
           >
             <h2 className="card-title">API Credentials</h2>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -52,13 +57,14 @@ export default function CredentialsPage() {
                 <input
                   type="checkbox"
                   checked={isProd}
+                  disabled={isProd}
                   onChange={() => setIsProd(!isProd)}
                   style={{ opacity: 0, width: 0, height: 0 }}
                 />
                 <span
                   style={{
                     position: "absolute",
-                    cursor: "pointer",
+                    cursor: isProd ? "not-allowed" : "pointer",
                     top: 0,
                     left: 0,
                     right: 0,
@@ -118,7 +124,7 @@ export default function CredentialsPage() {
 
           {/* IP Whitelist Section */}
           <div
-            style={{   cursor: "pointer" }}
+            style={{ cursor: "pointer" }}
             onClick={() => toggleSection("ipWhitelist")}
             className="p-4"
           >
@@ -203,7 +209,7 @@ export default function CredentialsPage() {
 
           {/* Callback URL Section */}
           <div
-            style={{  cursor: "pointer" }}
+            style={{ cursor: "pointer" }}
             onClick={() => toggleSection("callbackUrl")}
             className="p-4"
           >
@@ -249,7 +255,7 @@ export default function CredentialsPage() {
                 <div style={{ textAlign: "center", marginTop: "16px" }}>
                   <button
                     style={{ padding: "8px 16px", borderRadius: "4px" }}
-                    onClick={(e) => e.stopPropagation()} 
+                    onClick={(e) => e.stopPropagation()}
                     className="brandorange-bg-light brandorange-text">
                     Submit
                   </button>

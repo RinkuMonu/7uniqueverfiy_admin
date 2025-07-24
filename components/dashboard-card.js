@@ -93,11 +93,11 @@ const handlePurchase = async (serviceId) => {
 
     setMessage({ type: "success", text: data.message });
     dispatch(fetchAdminDetails());
-    toast.success(data.message || "Purchase successful!");
+    // toast.success(data.message || "Purchase successful!");
   } catch (error) {
     const errMsg = error?.response?.data?.message || "Purchase request failed.";
     setMessage({ type: "error", text: errMsg });
-    toast.error(errMsg);
+    // toast.error(errMsg);
   } finally {
     setLoading(false);
   }
