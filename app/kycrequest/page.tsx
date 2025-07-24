@@ -18,6 +18,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function KycRequestPage() {
+  const [viewDoc, setViewDoc] = useState(null);
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
@@ -88,7 +90,7 @@ export default function KycRequestPage() {
   return (
     <div style={{ minHeight: "105vh", padding: "24px", backgroundColor: "#f9fafb" }}>
       {/* Filters Card */}
-      <div style={{  marginBottom: "24px" }} className="  card custom-card">
+      <div style={{ marginBottom: "24px" }} className="  card custom-card">
         <div >
           <div style={{ alignItems: "center", justifyContent: "space-between" }} className="md:flex card-header">
             {/* Left Section: Icon + Heading */}
@@ -98,7 +100,7 @@ export default function KycRequestPage() {
             </div>
 
             {/* Right Section: Sort Order Dropdown */}
-            <div style={{ display: "flex", gap: "40px"}} >
+            <div style={{ display: "flex", gap: "40px" }} >
               <Select
                 id="sortOrder"
                 value={filters.sortOrder}
@@ -205,7 +207,7 @@ export default function KycRequestPage() {
               <div className="table-responsive ">
                 <table className="table text-nowrap w-full">
                   <thead className="brandorange-bg-light"><tr className="text-left">
-                    {["User", "Details", "Status", "Date", "Actions"].map(header => (
+                    {["User", "Details", "Status", "Date", "Actions", "Documents"].map(header => (
                       <th key={header}>{header}</th>
                     ))}
                   </tr> </thead>
@@ -263,11 +265,110 @@ export default function KycRequestPage() {
 
                           </div>
                         </td>
+                        <td style={{ padding: "16px 24px" }}>
+                          <Button
+                            size="sm"
+                            className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-3 py-1 rounded"
+                            onClick={() => setViewDoc(user?.documents)} // or user.kycDocuments[0] if it's an array
+                          >
+                            View
+                          </Button>
+                        </td>
+
                       </tr>
                     ))}
                   </tbody>
 
                 </table>
+
+                {viewDoc && (
+                  <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center">
+                    <div
+                      className="bg-white rounded-xl shadow-lg flex flex-col relative"
+                      style={{
+                        width: '90vw',
+                        height: '90vh',
+                        maxWidth: '900px',
+                        maxHeight: '90vh',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <button
+                        onClick={() => setViewDoc(null)}
+                        className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-3xl font-bold z-20"
+                        style={{ zIndex: 20, background: 'white', borderRadius: '50%', padding: '2px 10px' }}
+                      >
+                        ×
+                      </button>
+
+                      <div className="pt-6 pb-3 px-6 border-b border-gray-200">
+                        <h3 className="text-xl font-semibold text-center text-gray-800">KYC Documents</h3>
+                      </div>
+
+                      <div
+                        className="overflow-y-auto px-6 pb-6 pt-2"
+                        style={{ flex: 1, overflowY: 'auto' }}
+                      >
+                        {viewDoc?.aadhaarCard && (
+                          <div className="mb-6 text-center">
+                            <p className="font-medium mb-2 text-gray-700">Aadhaar Card</p>
+                            <img
+                              src={`https://api.7uniqueverfiy.com/uploads/kyc/${viewDoc.aadhaarCard}`}
+                              alt="Aadhaar Card"
+                              style={{
+                                maxHeight: '60vh',
+                                width: 'auto',
+                                maxWidth: '100%',
+                                objectFit: 'contain',
+                                margin: '0 auto',
+                                border: '1px solid #ddd',
+                                borderRadius: '8px',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {viewDoc?.panCard && (
+                          <div className="mb-6 text-center">
+                            <p className="font-medium mb-2 text-gray-700">Pan Card</p>
+                            <img
+                              src={`https://api.7uniqueverfiy.com/uploads/kyc/${viewDoc.panCard}`}
+                              alt="Aadhaar Card"
+                              style={{
+                                maxHeight: '60vh',
+                                width: 'auto',
+                                maxWidth: '100%',
+                                objectFit: 'contain',
+                                margin: '0 auto',
+                                border: '1px solid #ddd',
+                                borderRadius: '8px',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {viewDoc?.gstCert && (
+                          <div className="mb-6 text-center">
+                            <p className="font-medium mb-2 text-gray-700">GST Card</p>
+                            <img
+                              src={`https://api.7uniqueverfiy.com/uploads/kyc/${viewDoc.gstCert}`}
+                              alt="Aadhaar Card"
+                              style={{
+                                maxHeight: '60vh',
+                                width: 'auto',
+                                maxWidth: '100%',
+                                objectFit: 'contain',
+                                margin: '0 auto',
+                                border: '1px solid #ddd',
+                                borderRadius: '8px',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Add more sections for other documents if needed */}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "24px", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ fontSize: "14px", color: "#6b7280" }}>
                     Showing page {page} of {totalPages} • {users?.length} results

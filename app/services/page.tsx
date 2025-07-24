@@ -47,50 +47,59 @@ export default function ServiceDynamicPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log("🔄 Form submission started");
+        // console.log("🔄 Form submission started");
 
         try {
             const hasFile = service.fields.some((field) => field.type === "file");
+            // console.log(`📦 Payload includes file: ${hasFile}`);
 
             let requestData;
             let headers = {};
 
             // Step 1: Prepare request payload
             if (hasFile) {
+                // console.log("🛠️ Preparing FormData payload...");
                 const formPayload = new FormData();
                 service.fields.forEach((field) => {
+                    console.log(`📎 Appending field: ${field.name}`);
                     formPayload.append(field.name, formData[field.name]);
                 });
                 requestData = formPayload;
-                // ✅ DO NOT set Content-Type manually for FormData
             } else {
+                // console.log("🛠️ Preparing JSON payload...");
                 const jsonPayload = {};
                 service.fields.forEach((field) => {
+                    console.log(`📎 Adding field: ${field.name} => ${formData[field.name]}`);
                     jsonPayload[field.name] = formData[field.name];
                 });
                 requestData = JSON.stringify(jsonPayload);
-                headers["Content-Type"] = "application/json"; // ✅ Only for JSON
+                headers["Content-Type"] = "application/json";
             }
 
             // Step 2: Determine environment
-            // const isKycVerified = admin?.environment_mode;
             const environment = admin?.environment_mode ? "production" : "credentials";
             const envConfig = admin?.[environment];
-            console.log(envConfig?.jwtSecret);
+            // console.log(`🌐 Selected environment: ${environment}`);
+            // console.log("🔐 JWT Secret Present:", envConfig?.jwtSecret);
+            // console.log("🔑 Auth Key Present:", envConfig);
 
             if (!envConfig?.jwtSecret || !envConfig?.authKey) {
-                throw new Error("Missing JWT secret or auth key in environment config");
+                throw new Error("❌ Missing JWT secret or auth key in environment config");
             }
 
             // Step 3: Generate JWT token
+            // console.log("🔐 Generating JWT token...");
             const token = await generateToken({
                 userId: admin._id,
                 email: admin.email,
                 role: admin.role,
-            }, envConfig.jwtSecret);
+            }, envConfig?.jwtSecret);
+            // console.log("✅ JWT token generated");
 
             // Step 4: API call
-            const res = await fetch(`https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`, {
+            const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
+            // console.log(`📡 Sending request to: ${endpointUrl}`);
+            const res = await fetch(endpointUrl, {
                 method: "POST",
                 headers: {
                     ...headers,
@@ -101,12 +110,15 @@ export default function ServiceDynamicPage() {
                 body: requestData,
             });
 
+            // console.log("⏳ Waiting for API response...");
             const result = await res.json();
+            console.log("📬 API Response:", result);
+
             if (result.success) {
+                console.log("🎉 Success response received. Fetching latest admin details...");
                 dispatch(fetchAdminDetails());
             }
 
-            console.log("✅ API response received:", result);
             setResponse(result);
 
         } catch (err) {
@@ -122,20 +134,21 @@ export default function ServiceDynamicPage() {
 
 
 
+
     if (!service) return <p className="text-center mt-10">Loading service details...</p>;
 
     return (
         <div style={{
-           
+
             margin: '0 auto',
             marginTop: '2.5rem',
-        
+
         }}
-        className="card custom-card">
-         <div className="card-header ">
-               <h1  className="card-title">
-                {service.name} Verification
-                {/* <span style={{
+            className="card custom-card">
+            <div className="card-header ">
+                <h1 className="card-title">
+                    {service.name} Verification
+                    {/* <span style={{
                     position: 'absolute',
                     bottom: '-0.5rem',
                     left: '50%',
@@ -145,55 +158,55 @@ export default function ServiceDynamicPage() {
                     backgroundColor: '#dbeafe',
                     borderRadius: '9999px'
                 }}></span> */}
-            </h1>
-         </div>
+                </h1>
+            </div>
 
-            <div  className="p-4 ">
+            <div className="p-4 ">
                 <form onSubmit={handleSubmit} >
                     <div className="grid grid-cols-12 gap-4">
                         {service.fields.map((field) => (
-                        <div key={field.name} className="col-span-12 sm:col-span-6 lg:col-span-4">
-                          
-                              <label style={{
-                                display: 'block',
-                                color: '#374151',
-                                fontWeight: '500',
-                                marginBottom: '0.5rem',
-                                transition: 'all 0.2s ease'
-                            }}>
-                                {field.label}
-                                {field.required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
-                            </label>
-                            <input
-                                type={field.type || "text"}
-                                name={field.name}
-                                required={field.required}
-                                onChange={handleChange}
-                                style={{
-                                    width: '100%',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '0.5rem',
-                                    padding: '0.75rem 1rem',
-                                    outline: 'none',
-                                    transition: 'all 0.2s ease',
-                                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-                                }}
-                                onFocus={(e) => {
-                                    e.target.style.borderColor = '#3b82f6';
-                                    e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-                                }}
-                                onBlur={(e) => {
-                                    e.target.style.borderColor = '#d1d5db';
-                                    e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
-                                }}
-                                placeholder={`Enter ${field.label.toLowerCase()}`}
-                            />
-                        
-                        </div>
-                    ))}
+                            <div key={field.name} className="col-span-12 sm:col-span-6 lg:col-span-4">
+
+                                <label style={{
+                                    display: 'block',
+                                    color: '#374151',
+                                    fontWeight: '500',
+                                    marginBottom: '0.5rem',
+                                    transition: 'all 0.2s ease'
+                                }}>
+                                    {field.label}
+                                    {field.required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
+                                </label>
+                                <input
+                                    type={field.type || "text"}
+                                    name={field.name}
+                                    required={field.required}
+                                    onChange={handleChange}
+                                    style={{
+                                        width: '100%',
+                                        border: '1px solid #d1d5db',
+                                        borderRadius: '0.5rem',
+                                        padding: '0.75rem 1rem',
+                                        outline: 'none',
+                                        transition: 'all 0.2s ease',
+                                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = '#3b82f6';
+                                        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = '#d1d5db';
+                                        e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                                    }}
+                                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                                />
+
+                            </div>
+                        ))}
 
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'end' , margin:"10px 0px"}}>
+                    <div style={{ display: 'flex', justifyContent: 'end', margin: "10px 0px" }}>
                         <button
                             type="submit"
                             style={{
@@ -203,18 +216,18 @@ export default function ServiceDynamicPage() {
                                 border: 'none',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                              
+
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 opacity: loading ? 0.9 : 1
                             }}
                             onMouseOver={(e) => {
-                               
+
                                 e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
                             }}
                             onMouseOut={(e) => {
-                           
+
                                 e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
                             }}
                             disabled={loading}
@@ -243,88 +256,88 @@ export default function ServiceDynamicPage() {
                             )}
                         </button>
                     </div>
-                     {response && (
-                    <div style={{
-                        marginTop: '1.5rem',
-                        padding: '1.5rem',
-                        backgroundColor: '#f9fafb',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '0.5rem',
-                        transition: 'all 0.3s ease',
-                        transform: 'scale(1)',
-                        alignSelf: 'flex-start',  // Align to top of container
-                        maxWidth:'1000px'
-                    }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.005)';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                    >
+                    {response && (
                         <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: '0.75rem'
-                        }}>
-                            <h2 style={{
-                                fontSize: '1.125rem',
-                                fontWeight: '600',
-                                color: '#1f2937',
+                            marginTop: '1.5rem',
+                            padding: '1.5rem',
+                            backgroundColor: '#f9fafb',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '0.5rem',
+                            transition: 'all 0.3s ease',
+                            transform: 'scale(1)',
+                            alignSelf: 'flex-start',  // Align to top of container
+                            maxWidth: '1000px'
+                        }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.005)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                        >
+                            <div style={{
                                 display: 'flex',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginBottom: '0.75rem'
                             }}>
-                                <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem', color: '#2563eb' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                Response
-                            </h2>
-                            <button
-                                onClick={() => setResponse(null)}
-                                style={{
-                                    color: '#9ca3af',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    transition: 'color 0.2s ease'
-                                }}
-                                onMouseOver={(e) => {
-                                    e.target.style.color = '#4b5563';
-                                }}
-                                onMouseOut={(e) => {
-                                    e.target.style.color = '#9ca3af';
-                                }}
-                            >
-                                <svg style={{ width: '1.25rem', height: '1.25rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div style={{
-                            overflow: 'auto',
-                            maxHeight: '15rem',
-                            backgroundColor: 'white',
-                            padding: '1rem',
-                            borderRadius: '0.25rem',
-                            border: '1px solid #f3f4f6'
-                        }}>
-                            <pre style={{
-                                whiteSpace: 'pre-wrap',
-                                color: '#374151',
-                                fontSize: '0.875rem',
-                                margin: 0
+                                <h2 style={{
+                                    fontSize: '1.125rem',
+                                    fontWeight: '600',
+                                    color: '#1f2937',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                }}>
+                                    <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem', color: '#2563eb' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Response
+                                </h2>
+                                <button
+                                    onClick={() => setResponse(null)}
+                                    style={{
+                                        color: '#9ca3af',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'color 0.2s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.target.style.color = '#4b5563';
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.target.style.color = '#9ca3af';
+                                    }}
+                                >
+                                    <svg style={{ width: '1.25rem', height: '1.25rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div style={{
+                                overflow: 'auto',
+                                maxHeight: '15rem',
+                                backgroundColor: 'white',
+                                padding: '1rem',
+                                borderRadius: '0.25rem',
+                                border: '1px solid #f3f4f6'
                             }}>
-                                {JSON.stringify(response.message, null, 2)}
-                                {JSON.stringify(response.data, null, 2)}
-                            </pre>
+                                <pre style={{
+                                    whiteSpace: 'pre-wrap',
+                                    color: '#374151',
+                                    fontSize: '0.875rem',
+                                    margin: 0
+                                }}>
+                                    {JSON.stringify(response.message, null, 2)}
+                                    {JSON.stringify(response.data, null, 2)}
+                                </pre>
+                            </div>
                         </div>
-                    </div>
-                )}
-                
+                    )}
+
                 </form>
 
-               
+
             </div>
         </div>
     );
