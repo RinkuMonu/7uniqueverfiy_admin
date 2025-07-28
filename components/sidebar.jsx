@@ -336,7 +336,7 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className={cn("py-6", isOpen ? "px-4" : "px-3")} style={{ height: "calc(100vh - 200px)" }}>
+          <div className={cn("py-6", isOpen ? "px-4" : "px-3")} style={{ height: "calc(100vh - 100px)" }}>
             <nav className="space-y-1">
               {navItems.map((item) =>
                 !item.children ? (

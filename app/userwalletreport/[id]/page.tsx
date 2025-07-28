@@ -20,6 +20,7 @@ export default function WalletLedger({ params }) {
     startDate: "",
     endDate: ""
   });
+
   const mode = admin?.environment_mode;
 
   const fetchWalletLedger = async () => {
@@ -50,7 +51,7 @@ export default function WalletLedger({ params }) {
 
   useEffect(() => {
     fetchWalletLedger();
-  }, [page, limit, filters, mode]);
+  }, [page, limit, filters, mode, admin]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -165,7 +166,7 @@ export default function WalletLedger({ params }) {
                 {walletData.length > 0 ? (
                   walletData.map((item, index) => (
                     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="p-3 text-sm text-gray-700">{index + 1}</td>
+                      <td className="p-3 text-sm text-gray-700">{(page - 1) * limit + index + 1}</td>
                       <td className="p-3 text-sm text-gray-700 capitalize">{item.type}</td>
                       <td className={`p-3 text-sm font-semibold ${item.type === "credit" ? "text-green-600" : "text-red-600"}`}>
                         ₹{item.amount.toFixed(2)}

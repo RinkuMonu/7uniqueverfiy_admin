@@ -100,7 +100,7 @@ export default function ApiRequestPage() {
                                     <th>User</th>
                                     <th>Service</th>
                                     <th>Status</th>
-                                    <th>Custom Charge</th>
+                                    {/* <th>Custom Charge</th> */}
                                     <th>Action</th>
                                     <th>Date</th>
                                 </tr>
@@ -111,7 +111,7 @@ export default function ApiRequestPage() {
                                         <td>{req.user?.name || "-"}</td>
                                         <td>{req.service?.name || "-"}</td>
                                         <td>{req.status}</td>
-                                        <td>₹{req.customCharge || "—"}</td>
+                                        {/* <td>₹{req.customCharge || "—"}</td> */}
                                         <td>
                                             <select
                                                 value={req.status}

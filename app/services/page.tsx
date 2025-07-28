@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SignJWT } from "jose";
 import { useSearchParams } from "next/navigation";
 import axiosInstance from "@/components/service/axiosInstance";
@@ -26,6 +26,8 @@ export default function ServiceDynamicPage() {
     const [formData, setFormData] = useState({});
     const [response, setResponse] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const dynamicIdRef = useRef(null);
 
     useEffect(() => {
         if (id) {
@@ -79,9 +81,6 @@ export default function ServiceDynamicPage() {
             // Step 2: Determine environment
             const environment = admin?.environment_mode ? "production" : "credentials";
             const envConfig = admin?.[environment];
-            // console.log(`🌐 Selected environment: ${environment}`);
-            // console.log("🔐 JWT Secret Present:", envConfig?.jwtSecret);
-            // console.log("🔑 Auth Key Present:", envConfig);
 
             if (!envConfig?.jwtSecret || !envConfig?.authKey) {
                 throw new Error("❌ Missing JWT secret or auth key in environment config");
@@ -114,12 +113,23 @@ export default function ServiceDynamicPage() {
             const result = await res.json();
             console.log("📬 API Response:", result);
 
-            if (result.success) {
-                console.log("🎉 Success response received. Fetching latest admin details...");
-                dispatch(fetchAdminDetails());
-            }
+            // if (result.success) {
+            //     console.log("🎉 Success response received. Fetching latest admin details...");
+            //     dispatch(fetchAdminDetails());
+            // }
 
             setResponse(result);
+
+            const id = result.data?.data?.client_id || result.data?.data?.request_id || result.data?.data?.transaction_id || result.data?.data?.refid;
+        
+            if (id) {
+                dynamicIdRef.current = id;
+
+                setFormData((prev) => ({
+                    ...prev,
+                    client_id: id,
+                }));
+            }
 
         } catch (err) {
             console.error("❌ Submission error:", err);
@@ -131,7 +141,16 @@ export default function ServiceDynamicPage() {
     };
 
 
-
+    // const clearDynamicId = () => {
+    //     dynamicIdRef.current = null;
+    //     setFormData((prev) => {
+    //         const newData = { ...prev };
+    //         delete newData.client_id;
+    //         delete newData.ref_id;
+    //         delete newData.transaction_id;
+    //         return newData;
+    //     });
+    // };
 
 
 
@@ -181,6 +200,7 @@ export default function ServiceDynamicPage() {
                                     type={field.type || "text"}
                                     name={field.name}
                                     required={field.required}
+                                    value={formData[field.name] || ""}
                                     onChange={handleChange}
                                     style={{
                                         width: '100%',

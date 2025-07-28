@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "@/styles/dashboard.css"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ComposedChart, Bar } from "recharts"
 import { Button } from "@/components/ui/button"
@@ -6,6 +6,7 @@ import { Download, Calendar, Upload, ChevronDown, TrendingUp, TrendingDown } fro
 import { Card, CardContent } from "@/components/ui/card"
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
+import axiosInstance from './service/axiosInstance'
 
 
 
@@ -44,9 +45,28 @@ const timePeriods = ["Day", "Week", "Month", "Year"]
 function Dashboard() {
     const [sortBy, setSortBy] = useState("Date")
     const [selectedPeriod, setSelectedPeriod] = useState("Day")
-    const {admin}=useSelector(state=>state?.admin)
-    console.log("dfgfdsdfgfdf",admin);
-    
+    const [total, setTotal] = useState()
+    const { admin } = useSelector(state => state?.admin)
+
+    const fatchTransiction = async () => {
+        const mode = admin?.environment_mode;
+        try {
+            const res = await axiosInstance.get('/user/wallet-ledger', {
+                params: {
+                    mode
+                },
+            });
+            setTotal(res.data.total);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(
+        () => {
+            fatchTransiction()
+        }, []
+    )
+
     return (
         <>
             <div className='bg-gray-50 p-2 md:p-6'>
@@ -57,12 +77,16 @@ function Dashboard() {
                     </div>
 
                     <div className="md:flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-gray-600 py-2 md:py-0">
-                            <Calendar className="w-4 h-4" />
-                            <span className="text-sm font-medium">May, 01 2024 to May, 30 2024</span>
+                        <div className="flex items-center gap-2 text-gray-700 bg-gray-100 rounded-md px-3 py-2 shadow-sm">
+                            <Calendar className="w-4 h-4 text-blue-600" />
+                            <div className="text-sm font-medium">
+                                <span className="text-gray-500">Join Date:</span>{" "}
+                                <span className="text-gray-800">{new Date(admin?.createdAt).toLocaleDateString("en-IN")}</span>
+                            </div>
                         </div>
 
-                      
+
+
                     </div>
                 </div>
                 <div className="row grid grid-cols-12 py-4 gap-3">
@@ -91,11 +115,11 @@ function Dashboard() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-500">Total Transaction</p>
-                                   <h2 className="text-2xl font-semibold text-gray-900">
-  {admin?.serviceUsage?.length || 0}
-</h2>
+                                    <h2 className="text-2xl font-semibold text-gray-900">
+                                        {total || 0}
+                                    </h2>
 
-                                    <a href="#" className="text-sm text-indigo-600 hover:underline">
+                                    <a href={`/userwalletreport/${admin?._id}`} className="text-sm text-indigo-600 hover:underline">
                                         View all Transaction
                                     </a>
                                 </div>
@@ -105,7 +129,7 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                            <p className="text-sm text-green-500 mt-2">↑ 0.29%</p>
+                            <p className="text-sm text-green-500 mt-2">↑ 0.90%</p>
                         </div>
                     </div>
                     <div className='col-span-12 lg:col-span-3 '>
@@ -114,8 +138,8 @@ function Dashboard() {
                                 <div>
                                     <p className="text-sm text-gray-500">My API</p>
                                     <h2 className="text-2xl font-semibold text-gray-900">
-  {admin?.services?.length || 0}
-</h2>
+                                        {admin?.services?.length || 0}
+                                    </h2>
                                     <Link href="/api-catalogue" className="text-sm text-indigo-600 hover:underline">
                                         View all API
                                     </Link>
@@ -126,7 +150,7 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                            <p className="text-sm text-green-500 mt-2">↑ 0.29%</p>
+                            <p className="text-sm text-green-500 mt-2">↑ 0.20%</p>
                         </div>
                     </div>
                     <div className='col-span-12 lg:col-span-3 '>
@@ -145,7 +169,7 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                            <p className="text-sm text-green-500 mt-2">↑ 0.29%</p>
+                            <p className="text-sm text-green-500 mt-2">↑ 0.45%</p>
                         </div>
                     </div>
 
@@ -156,16 +180,16 @@ function Dashboard() {
                     <div className=' col-span-12 lg:col-span-4 '>
                         <div className=" bg-white ">
                             <div className="max-w-4xl mx-auto">
-                              <div className='border-b-2 border-gray-100'>
-                                 
+                                <div className='border-b-2 border-gray-100'>
+
                                     <div className="flex items-center justify-between p-4">
-                                    <h1 className="text-xl font-semibold text-gray-700">API Report</h1>
-                                    <Button variant="outline" className="bg-white text-gray-400  border-none">
-                                        <span>Sort By</span>
-                                        <ChevronDown className="w-4 h-4 ml-2" />
-                                    </Button>
-                                
-                              </div>
+                                        <h1 className="text-xl font-semibold text-gray-700">API Report</h1>
+                                        <Button variant="outline" className="bg-white text-gray-400  border-none">
+                                            <span>Sort By</span>
+                                            <ChevronDown className="w-4 h-4 ml-2" />
+                                        </Button>
+
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
@@ -242,18 +266,18 @@ function Dashboard() {
                     </div>
                     <div className=' col-span-12 lg:col-span-8'>
                         <div className=" bg-white">
-                           <div className='border-b-2 border-gray-100 '>
-                             <div className="lg:flex items-center justify-between p-2 md:p-4">
-                                <h1 className="text-2xl font-semibold text-gray-900 ">API Statistics</h1>
-                                <div className="md:flex items-center gap-4">
+                            <div className='border-b-2 border-gray-100 '>
+                                <div className="lg:flex items-center justify-between p-2 md:p-4">
+                                    <h1 className="text-2xl font-semibold text-gray-900 ">API Statistics</h1>
+                                    <div className="md:flex items-center gap-4">
 
-                                    <Button variant="outline" className="bg-grey200  text-gray-700 border-gray-300 mt-2 md:mt-0">
-                                        <span>Export</span>
-                                        <Download className="w-4 h-1 ml-2" />
-                                    </Button>
+                                        <Button variant="outline" className="bg-grey200  text-gray-700 border-gray-300 mt-2 md:mt-0">
+                                            <span>Export</span>
+                                            <Download className="w-4 h-1 ml-2" />
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                           </div>
 
                             <div className="p-4">
                                 <div className="flex items-center gap-6">

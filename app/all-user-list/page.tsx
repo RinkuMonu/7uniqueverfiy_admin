@@ -23,6 +23,9 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { FiUsers, FiCheckCircle, FiKey, FiEdit2 } from "react-icons/fi";
+import { BsEye } from 'react-icons/bs';
+
+
 
 const roles = ["All", "User", "Admin"];
 
@@ -100,7 +103,7 @@ export default function AllUserListPage() {
 
 
 
-          <h1 style={{  color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }} className="card-title">
+          <h1 style={{ color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }} className="card-title">
             <FiUsers style={{ color: '#000000' }} />
 
             User Management
@@ -216,13 +219,16 @@ export default function AllUserListPage() {
         <div className="card-body">
           <div className="table-responsive ">
             <table className="table text-nowrap w-full">
-              <thead className="brandorange-bg-light"><tr className="text-left">
-                <th className="col">User Name</th>
-                <th className="col">Verified</th>
-                <th className="col">Email</th>
-                <th className="col">User ID</th>
-                <th className="col">Actions</th>
-              </tr> </thead>
+              <thead className="brandorange-bg-light">
+                <tr className="text-left">
+                  <th className="col">User Name</th>
+                  <th className="col">Verified</th>
+                  <th className="col">Email</th>
+                  <th className="col">User ID</th>
+                  <th className="col">Actions</th>
+                  <th className="col">Details</th>
+                </tr>
+              </thead>
 
               <tbody className="">
                 {users.map((user: any, idx: number) => (
@@ -280,35 +286,44 @@ export default function AllUserListPage() {
                       )}
                     </div> */}
                     </td>
+                    <td >
+                      <Link
+                        href={`/userDetails/${user._id}`}
+                        className="brandorange-bg-light brandorange-text px-2 py-1 rounded text-xs font-medium inline-flex items-center gap-1"
+                        title="Details"
+                      >
+                        <BsEye />
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
 
             </table>
             <div className="flex justify-between items-center mt-4 p-2">
-            <button
-              className="border border-gray-300 rounded px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-            >
-              Previous
-            </button>
-            <span className="text-sm text-slate-600">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              className="border border-gray-300 rounded px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
-              disabled={page >= totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Next
-            </button>
-          </div>
+              <button
+                className="border border-gray-300 rounded px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                Previous
+              </button>
+              <span className="text-sm text-slate-600">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                className="border border-gray-300 rounded px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div> </div>
-          </div>
-
-
-       
       </div>
-      );
+
+
+
+    </div>
+  );
 }
