@@ -129,10 +129,10 @@ export default function ServiceDynamicPage() {
                     ...prev,
                     client_id: id,
                 }));
-            } else {
-                setFormData({});
-                dynamicIdRef.current = null;
             }
+            setFormData({});
+            dynamicIdRef.current = null;
+
 
 
         } catch (err) {
