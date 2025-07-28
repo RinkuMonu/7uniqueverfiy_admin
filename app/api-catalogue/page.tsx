@@ -37,6 +37,12 @@ export default function APICataloguePage() {
     },
   ]);
 
+  const showService = admin?.role == 'admin' ? services : admin?.services;
+
+  console.log(admin?.customServiceCharges);
+  console.log(showService);
+
+
   useEffect(() => {
     allService(
       page,
@@ -168,6 +174,9 @@ export default function APICataloguePage() {
     }
   };
 
+
+
+
   const resetForm = () => {
     setFormFields([
       {
@@ -197,21 +206,21 @@ export default function APICataloguePage() {
 
   return (
     <div className="p-6 font-sans bg-gray-50 min-h-screen">
-      <div className=" mb-6 card custom-card overflow-auto">
-        {/* Header */}
-        <div className="md:flex justify-between text-black-600 mb-6 card-header">
-          <div style={{ alignItems: "center", gap: "8px" }} className="flex">
-            <FaServer
-              style={{
-                color: "black",
+      {admin?.role === "admin" && (
+        <div className=" mb-6 card custom-card overflow-auto">
+          {/* Header */}
+          <div className="md:flex justify-between text-black-600 mb-6 card-header">
+            <div style={{ alignItems: "center", gap: "8px" }} className="flex">
+              <FaServer
+                style={{
+                  color: "black",
 
-                marginRight: "8px",
-              }}
-              className="card-title"
-            />
-            <h1 className="text-2xl card-title">API Catalogue</h1>
-          </div>
-          {admin?.role === "admin" && (
+                  marginRight: "8px",
+                }}
+                className="card-title"
+              />
+              <h1 className="text-2xl card-title">API Catalogue</h1>
+            </div>
             <div className="flex justify-center mt-2 md:mt-0 md:block  ">
               <button
                 onClick={() => {
@@ -244,95 +253,94 @@ export default function APICataloguePage() {
                 Add New API
               </button>
             </div>
-          )}
-        </div>
-
-        {/* Filters */}
-        <div
-          style={{
-            alignItems: "center",
-            gap: "16px",
-            marginBottom: "16px",
-            width: "100%",
-          }}
-          className="md:flex p-4"
-        >
-          <div style={{ position: "relative", flex: 1 }} className="">
-            <FaSearch
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#9CA3AF",
-              }}
-            />
-            <input
-              type="text"
-              placeholder="Search by API name"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                padding: "8px 12px 8px 36px",
-                borderRadius: "6px",
-                border: "1px solid #D1D5DB",
-                width: "100%",
-                fontSize: "14px",
-              }}
-            />
           </div>
 
-          <select
-            value={methodFilter}
-            onChange={(e) => setMethodFilter(e.target.value)}
+          {/* Filters */}
+          <div
             style={{
-              padding: "8px 12px",
-              borderRadius: "6px",
-              border: "1px solid #D1D5DB",
-              fontSize: "14px",
-              flex: 1,
+              alignItems: "center",
+              gap: "16px",
+              marginBottom: "16px",
+              width: "100%",
             }}
-            className="py-1"
+            className="md:flex p-4"
           >
-            <option value="">All Methods</option>
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-          </select>
+            <div style={{ position: "relative", flex: 1 }} className="">
+              <FaSearch
+                style={{
+                  position: "absolute",
+                  left: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#9CA3AF",
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Search by API name"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{
+                  padding: "8px 12px 8px 36px",
+                  borderRadius: "6px",
+                  border: "1px solid #D1D5DB",
+                  width: "100%",
+                  fontSize: "14px",
+                }}
+              />
+            </div>
 
-          <div style={{ gap: "8px", flex: 1 }} className="py-1 md:flex">
-            <input
-              type="number"
-              placeholder="Min Charge"
-              value={minCharge}
-              onChange={(e) => setMinCharge(e.target.value)}
+            <select
+              value={methodFilter}
+              onChange={(e) => setMethodFilter(e.target.value)}
               style={{
                 padding: "8px 12px",
                 borderRadius: "6px",
                 border: "1px solid #D1D5DB",
                 fontSize: "14px",
-                width: "100%",
-              }}
-              className="my-1"
-            />
-            <input
-              type="number"
-              placeholder="Max Charge"
-              value={maxCharge}
-              onChange={(e) => setMaxCharge(e.target.value)}
-              style={{
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid #D1D5DB",
-                fontSize: "14px",
-                width: "100%",
+                flex: 1,
               }}
               className="py-1"
-            />
-          </div>
+            >
+              <option value="">All Methods</option>
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
 
-          {/* <button
+            <div style={{ gap: "8px", flex: 1 }} className="py-1 md:flex">
+              <input
+                type="number"
+                placeholder="Min Charge"
+                value={minCharge}
+                onChange={(e) => setMinCharge(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #D1D5DB",
+                  fontSize: "14px",
+                  width: "100%",
+                }}
+                className="my-1"
+              />
+              <input
+                type="number"
+                placeholder="Max Charge"
+                value={maxCharge}
+                onChange={(e) => setMaxCharge(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #D1D5DB",
+                  fontSize: "14px",
+                  width: "100%",
+                }}
+                className="py-1"
+              />
+            </div>
+
+            {/* <button
         onClick={() => allService(page, limit, search, methodFilter, minCharge, maxCharge, activeOnly)}
         style={{
           display: 'inline-flex',
@@ -355,8 +363,10 @@ export default function APICataloguePage() {
       >
         Apply Filters
       </button> */}
+          </div>
+
         </div>
-      </div>
+      )}
 
       <div className="card custom-card">
         <div className="card-header justify-content-between">
@@ -370,119 +380,134 @@ export default function APICataloguePage() {
                   <th className="">API Name</th>
                   <th className="">Method</th>
                   <th className="">Charge</th>
-                  <th className="">Active Charge</th>
+                  {/* <th className="">Active Charge</th> */}
+                  <th className="">Custom Charge</th>
                   <th className="">Endpoint</th>
                   {admin?.role === "admin" && <th className="">Actions</th>}
                 </tr>{" "}
               </thead>
 
               <tbody className="">
-                {services.length === 0 ? (
+                {showService?.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-gray-500">
                       No APIs found.
                     </td>
                   </tr>
                 ) : (
-                  services.map((api, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="p-3">
-                        <div className="text-sm font-medium text-gray-700">
-                          {api.name}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {api.descreption}
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <span
-                          className="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-                          style={
-                            getMethodClass(api.method).includes("green")
-                              ? { backgroundColor: "#DCFCE7", color: "#166534" }
-                              : getMethodClass(api.method).includes("blue")
-                              ? { backgroundColor: "#DBEAFE", color: "#1E40AF" }
-                              : getMethodClass(api.method).includes("yellow")
-                              ? { backgroundColor: "#FEF3C7", color: "#92400E" }
-                              : { backgroundColor: "#F3F4F6", color: "#4B5563" }
-                          }
-                        >
-                          {api.method}
-                        </span>
-                      </td>
-                      <td className="p-3 text-sm font-mono text-gray-700">
-                        ₹{api.charge}
-                      </td>
-                      <td className="p-3 text-sm font-mono text-gray-700">
-                        ₹{api.active_charge}
-                      </td>
-                      <td className="p-3 text-sm font-mono text-gray-700">
-                        {api.endpoint}
-                      </td>
-                      {admin?.role === "admin" && (
+                  showService?.map((api, index) => {
+                    const matchedCharge = admin?.customServiceCharges.find(
+                      charge => charge.service === api._id
+                    );
+                    return (
+                      <tr
+                        key={index}
+                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                      >
                         <td className="p-3">
-                          <button
-                            onClick={() => openEditModal(api)}
-                            style={{
-                              padding: "4px 8px",
-                              borderRadius: "4px",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                            className="brandorange-bg-light brandorange-text"
-                          >
-                            <FaEdit size={12} />
-                            Edit
-                          </button>
+                          <div className="text-sm font-medium text-gray-700">
+                            {api.name}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {api.descreption}
+                          </div>
                         </td>
-                      )}
-                    </tr>
-                  ))
+                        <td className="p-3">
+                          <span
+                            className="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                            style={
+                              getMethodClass(api.method).includes("green")
+                                ? { backgroundColor: "#DCFCE7", color: "#166534" }
+                                : getMethodClass(api.method).includes("blue")
+                                  ? { backgroundColor: "#DBEAFE", color: "#1E40AF" }
+                                  : getMethodClass(api.method).includes("yellow")
+                                    ? { backgroundColor: "#FEF3C7", color: "#92400E" }
+                                    : { backgroundColor: "#F3F4F6", color: "#4B5563" }
+                            }
+                          >
+                            {api.method}
+                          </span>
+                        </td>
+                        <td className="p-3 text-sm font-mono text-gray-700">
+                          ₹{api.charge}
+                        </td>
+                        <td className="p-3 text-sm font-mono text-gray-700">
+                          ₹{matchedCharge?.customCharge ?? 0}
+                        </td>
+                        {/* <td className="p-3 text-sm font-mono text-gray-700">
+                          ₹{api.active_charge}
+                        </td> */}
+                        <td className="p-3 text-sm font-mono text-gray-700">
+                          {api.endpoint}
+                        </td>
+
+                        {admin?.role === "admin" && (
+                          <td className="p-3">
+                            <button
+                              onClick={() => openEditModal(api)}
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                fontSize: "12px",
+                                fontWeight: 500,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "4px",
+                              }}
+                              className="brandorange-bg-light brandorange-text"
+                            >
+                              <FaEdit size={12} />
+                              Edit
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    )
+
+                  })
                 )}
               </tbody>
             </table>
-            <div className="flex justify-between items-center p-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "6px",
-                  backgroundColor: page <= 1 ? "#fde8df" : "#f9c4ad",
-                  color: page <= 1 ? "white" : "#b7603d",
-                  cursor: page <= 1 ? "not-allowed" : "pointer",
-                  border: "none",
-                  fontSize: "14px",
-                }}
-              >
-                Previous
-              </button>
-              <span className="text-sm text-gray-500">
-                Page {page} of {totalPages}
-              </span>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "6px",
-                  backgroundColor: page >= totalPages ? "#fde8df" : "#f9c4ad",
-                  color: page >= totalPages ? "white" : "#b7603d",
-                  cursor: page >= totalPages ? "not-allowed" : "pointer",
-                  border: "none",
-                  fontSize: "14px",
-                }}
-                className="hover:background-[#f9c4ad] brandorange-bg-light brandorange-text"
-              >
-                Next
-              </button>
-            </div>
+
+            {
+              admin?.role == 'admin' ?
+                <div className="flex justify-between items-center p-2">
+                  <button
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "6px",
+                      backgroundColor: page <= 1 ? "#fde8df" : "#f9c4ad",
+                      color: page <= 1 ? "white" : "#b7603d",
+                      cursor: page <= 1 ? "not-allowed" : "pointer",
+                      border: "none",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-gray-500">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "6px",
+                      backgroundColor: page >= totalPages ? "#fde8df" : "#f9c4ad",
+                      color: page >= totalPages ? "white" : "#b7603d",
+                      cursor: page >= totalPages ? "not-allowed" : "pointer",
+                      border: "none",
+                      fontSize: "14px",
+                    }}
+                    className="hover:background-[#f9c4ad] brandorange-bg-light brandorange-text"
+                  >
+                    Next
+                  </button>
+                </div> : ""
+            }
           </div>{" "}
         </div>
       </div>
@@ -494,7 +519,7 @@ export default function APICataloguePage() {
             className="absolute inset-0"
             onClick={() => setShowModal(false)}
           ></div>
-          <div className="card custom-card mb-6 relative z-10 bg-white max-w-md rounded-lg shadow-lg" style={{width:"70%"}}>
+          <div className="card custom-card mb-6 relative z-10 bg-white max-w-md rounded-lg shadow-lg" style={{ width: "70%" }}>
             <div className="flex items-center justify-between card-header">
               <h2 className="card-title">
                 {showEdit ? "Edit API" : "Create API(s)"}
@@ -502,7 +527,7 @@ export default function APICataloguePage() {
               <button onClick={() => setShowModal(false)}>❌</button>
             </div>
 
-            <form className="p-4 space-y-4" onSubmit={handleSubmit} style={{overflowY: "scroll", height: "calc(100vh - 150px)"}}>
+            <form className="p-4 space-y-4" onSubmit={handleSubmit} style={{ overflowY: "scroll", height: "calc(100vh - 150px)" }}>
               {formFields.map((field, index) => (
                 <div key={index} className="  pb-4 ">
                   <div className="grid grid-cols-12 gap-4">
@@ -539,7 +564,7 @@ export default function APICataloguePage() {
                         className="p-2 border rounded w-full  lg:w-auto"
                       />
                     </div>
-                    
+
                     <div className="col-span-4 mb-3 lg:col-span-6">
                       <input
                         type="text"
@@ -573,7 +598,7 @@ export default function APICataloguePage() {
                         rows={1}
                         className="p-2 border rounded w-full  lg:w-auto"
                       />
-                    </div>  
+                    </div>
                   </div>
 
                   <div className="mt-4">
@@ -596,7 +621,7 @@ export default function APICataloguePage() {
                           onChange={(e) => handleFieldChange(index, i, e)}
                           className="p-2 border rounded w-full"
                         />
-                        
+
                         <select
                           name="type"
                           value={f.type}
@@ -625,7 +650,7 @@ export default function APICataloguePage() {
                             <PiTrashLight />
                           </button>
                         )}
-                        
+
                       </div>
                     ))}
                     <button

@@ -24,7 +24,9 @@ export default function AssignServicesPage() {
 
 
     const handleOpenChargeModal = (api) => {
-        setSelectedServices([api._id]);
+        if (!selectedServices.includes(api._id)) {
+            setSelectedServices((prev) => [...prev, api._id]);
+        }
         setSelectedApiInfo({ _id: api._id, name: api.name, charge: api.charge });
         setShowChargeModal(true);
     };
