@@ -121,7 +121,7 @@ export default function ServiceDynamicPage() {
             setResponse(result);
 
             const id = result.data?.data?.client_id || result.data?.data?.request_id || result.data?.data?.transaction_id || result.data?.data?.refid;
-        
+
             if (id) {
                 dynamicIdRef.current = id;
 
@@ -129,7 +129,11 @@ export default function ServiceDynamicPage() {
                     ...prev,
                     client_id: id,
                 }));
+            } else {
+                setFormData({});
+                dynamicIdRef.current = null;
             }
+
 
         } catch (err) {
             console.error("❌ Submission error:", err);
