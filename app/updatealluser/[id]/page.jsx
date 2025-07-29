@@ -76,7 +76,8 @@ export default function EditUserForm() {
       router.push("/all-user-list");
     } catch (error) {
       console.error("Error updating user:", error);
-      alert("Failed to update user.");
+      toast.error(error.response.data.message)
+
     } finally {
       setLoading(false);
     }
@@ -84,11 +85,11 @@ export default function EditUserForm() {
 
   return (
     <form className="card custom-card" onSubmit={handleSubmit}>
-  <div className="card-header">
+      <div className="card-header">
         <h1 className="card-title flex ">
-        <FaUserShield className="icon mt-1 me-1" /> Edit User
-      </h1>
-  </div>
+          <FaUserShield className="icon mt-1 me-1" /> Edit User
+        </h1>
+      </div>
 
       <div className="form-grid p-4">
         <div className="input-wrapper">
@@ -140,15 +141,15 @@ export default function EditUserForm() {
             onChange={handleChange}
           />
           <label htmlFor="isVerified " className="ms-2">
-             Is Verified
+            Is Verified
           </label>
         </div>
       </div>
 
-        <div className="flex justify-center">
+      <div className="flex justify-center">
         <button className="brandorange-text brandorange-bg-light p-2 mb-2 rounded" type="submit" disabled={loading}>
-        {loading ? "Updating..." : "Update User"}
-      </button>
+          {loading ? "Updating..." : "Update User"}
+        </button>
       </div>
     </form>
   );
