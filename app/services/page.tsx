@@ -200,31 +200,61 @@ export default function ServiceDynamicPage() {
                                     {field.label}
                                     {field.required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
                                 </label>
-                                <input
-                                    type={field.type || "text"}
-                                    name={field.name}
-                                    required={field.required}
-                                    value={formData[field.name] || ""}
-                                    onChange={handleChange}
-                                    style={{
-                                        width: '100%',
-                                        border: '1px solid #d1d5db',
-                                        borderRadius: '0.5rem',
-                                        padding: '0.75rem 1rem',
-                                        outline: 'none',
-                                        transition: 'all 0.2s ease',
-                                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-                                    }}
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = '#3b82f6';
-                                        e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = '#d1d5db';
-                                        e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
-                                    }}
-                                    placeholder={`Enter ${field.label.toLowerCase()}`}
-                                />
+                                {
+                                    field.type === "file" ? (
+                                        <input
+                                            type={field.type || "text"}
+                                            name={field.name}
+                                            required={field.required}
+                                            onChange={handleChange}
+                                            style={{
+                                                width: '100%',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '0.5rem',
+                                                padding: '0.75rem 1rem',
+                                                outline: 'none',
+                                                transition: 'all 0.2s ease',
+                                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                                            }}
+                                            onFocus={(e) => {
+                                                e.target.style.borderColor = '#3b82f6';
+                                                e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
+                                            }}
+                                            onBlur={(e) => {
+                                                e.target.style.borderColor = '#d1d5db';
+                                                e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                                            }}
+                                            placeholder={`Enter ${field.label.toLowerCase()}`}
+                                        />
+                                    ) :
+                                        (
+                                            <input
+                                                type={field.type || "text"}
+                                                name={field.name}
+                                                required={field.required}
+                                                value={formData[field.name] || ""}
+                                                onChange={handleChange}
+                                                style={{
+                                                    width: '100%',
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '0.5rem',
+                                                    padding: '0.75rem 1rem',
+                                                    outline: 'none',
+                                                    transition: 'all 0.2s ease',
+                                                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                                                }}
+                                                onFocus={(e) => {
+                                                    e.target.style.borderColor = '#3b82f6';
+                                                    e.target.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.5)';
+                                                }}
+                                                onBlur={(e) => {
+                                                    e.target.style.borderColor = '#d1d5db';
+                                                    e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                                                }}
+                                                placeholder={`Enter ${field.label.toLowerCase()}`}
+                                            />
+                                        )
+                                }
 
                             </div>
                         ))}
