@@ -96,7 +96,7 @@ function Dashboard() {
                                 <div>
                                     <p className="text-sm text-gray-500">Total wallet</p>
                                     <h2 className="text-2xl font-semibold text-gray-900">{admin?.wallet?.mode?.production}</h2>
-                                    <Link href="/wallet-topup" className="text-sm text-indigo-600 hover:underline">
+                                    <Link href={admin.role == 'admin' ? "/wallet-topup" : "/user-topup"} className="text-sm text-indigo-600 hover:underline">
                                         Total wallet
 
                                     </Link>
