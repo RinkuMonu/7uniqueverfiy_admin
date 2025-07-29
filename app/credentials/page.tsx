@@ -8,11 +8,11 @@ export default function CredentialsPage() {
   const [isProd, setIsProd] = useState(false);
   useEffect(
     () => {
-      setIsProd(admin?.production?.jwtSecret ? true : false)
+      setIsProd(admin?.documents?.isVerified ? true : false)
     }, [admin]
   )
 
-  const environment = !isProd ? admin?.production : admin?.credentials;
+  const environment = isProd ? admin?.production : admin?.credentials;
 
   const credentials = [
     {
@@ -49,7 +49,7 @@ export default function CredentialsPage() {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 style={{ padding: "6px 12px", background: !isProd ? "#e5e7eb" : "#fff", borderRadius: "4px" }}
-                onClick={() => setIsProd(false)}
+                // onClick={() => setIsProd(admin?.documents?.isVerified ? true : false)}
               >
                 UAT
               </button>
@@ -58,7 +58,7 @@ export default function CredentialsPage() {
                   type="checkbox"
                   checked={isProd}
                   disabled={isProd}
-                  onChange={() => setIsProd(!isProd)}
+                  // onChange={() => setIsProd(admin?.documents?.isVerified ? true : false)}
                   style={{ opacity: 0, width: 0, height: 0 }}
                 />
                 <span
@@ -90,7 +90,7 @@ export default function CredentialsPage() {
               </label>
               <button
                 style={{ padding: "6px 12px", background: isProd ? "#e5e7eb" : "#fff", borderRadius: "4px" }}
-                onClick={() => setIsProd(true)}
+                // onClick={() => setIsProd(admin?.documents?.isVerified ? true : false)}
               >
                 Production
               </button>
