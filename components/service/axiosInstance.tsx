@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    // baseURL: 'https://api.7uniqueverfiy.com/api',
-    baseURL: 'http://localhost:5050/api', 
+    baseURL: 'https://api.7uniqueverfiy.com/api',
+    // baseURL: 'http://localhost:5050/api', 
     // headers: {
     //     'Content-Type': 'application/json',
     // },
