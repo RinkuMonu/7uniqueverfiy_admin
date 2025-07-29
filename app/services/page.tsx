@@ -130,10 +130,6 @@ export default function ServiceDynamicPage() {
                     client_id: id,
                 }));
             }
-            setFormData({});
-            dynamicIdRef.current = null;
-
-
 
         } catch (err) {
             console.error("❌ Submission error:", err);
