@@ -113,10 +113,10 @@ export default function ServiceDynamicPage() {
             const result = await res.json();
             console.log("📬 API Response:", result);
 
-            // if (result.success) {
-            //     console.log("🎉 Success response received. Fetching latest admin details...");
-            //     dispatch(fetchAdminDetails());
-            // }
+            if (result.success) {
+                console.log("🎉 Success response received. Fetching latest admin details...");
+                dispatch(fetchAdminDetails());
+            }
 
             setResponse(result);
 
