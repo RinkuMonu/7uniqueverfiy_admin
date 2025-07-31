@@ -544,22 +544,37 @@ export default function APICataloguePage() {
                     </div>
                     <div className="col-span-4 mb-3 lg:col-span-6">
                       <input
-                        type="number"
+                        type="text"
                         name="charge"
                         placeholder="Charge"
+                        maxLength={4}
                         value={field.charge}
-                        onChange={(e) => handleChange(index, e)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const regex = /^\d*\.?\d*$/;
+                          if (regex.test(value)) {
+                            handleChange(index, e);
+                          }
+                        }}
                         required
-                        className="p-2 border rounded w-full  lg:w-auto"
+                        className="p-2 border rounded w-full lg:w-auto"
                       />
+
                     </div>
                     <div className="col-span-4 mb-3 lg:col-span-6">
                       <input
-                        type="number"
+                        type="text"
                         name="active_charge"
+                         maxLength={4}
                         placeholder="Active Charge"
                         value={field.active_charge}
-                        onChange={(e) => handleChange(index, e)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const regex = /^\d*\.?\d*$/;
+                          if (regex.test(value)) {
+                            handleChange(index, e);
+                          }
+                        }}
                         required
                         className="p-2 border rounded w-full  lg:w-auto"
                       />

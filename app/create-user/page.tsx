@@ -51,7 +51,13 @@ export default function CreateUserForm() {
             name="name"
             placeholder="Full Name"
             value={form.name}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              const regex = /^[a-zA-Z\s]*$/;
+              if (regex.test(value)) {
+                handleChange(e);
+              }
+            }}
             className="form-input"
             required
           />
@@ -97,7 +103,7 @@ export default function CreateUserForm() {
           </select>
         </div>
       </div>
-      <div className="flex px-4" style={{"justifyContent" :"end"}}>
+      <div className="flex px-4" style={{ "justifyContent": "end" }}>
         <button className="brandorange-text brandorange-bg-light p-2 mb-2 rounded" type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create User"}
         </button>
