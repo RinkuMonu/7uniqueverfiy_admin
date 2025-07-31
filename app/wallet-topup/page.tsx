@@ -71,7 +71,7 @@ export default function WalletTopupForm() {
             <div className="form-group">
               <label className="form-label">Select User</label>
               <Select onValueChange={(val) => setSelectedUserId(val)}>
-                
+
                 <SelectTrigger className="form-input">
                   <SelectValue placeholder="Choose a user" />
                 </SelectTrigger>
@@ -88,30 +88,36 @@ export default function WalletTopupForm() {
             <div className="form-group">
               <label className="form-label">Amount (₹)</label>
               <input
-                type="number"
-                min="1"
+                type="text"
                 required
                 className="form-input"
+                maxLength={6}
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount e.g. 1000"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const regex = /^[0-9]*$/;
+                  if (regex.test(value) && (value === "" || parseInt(value) >= 1)) {
+                    setAmount(value);
+                  }
+                }}
               />
+
             </div>
             <div className="form-group">
-            <label className="form-label">Description</label>
-            <input
-              type="text"
-              required
-              className="form-input"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="E.g., Recharge, Bonus, Adjustment"
-            />
-          </div>
+              <label className="form-label">Description</label>
+              <input
+                type="text"
+                required
+                className="form-input"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="E.g., Recharge, Bonus, Adjustment"
+              />
+            </div>
           </div>
 
           {/* Row 2 - Description */}
-          
+
 
           {/* Submit Button */}
           <div className="button-container">

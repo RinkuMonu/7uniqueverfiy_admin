@@ -166,7 +166,7 @@ export default function ServiceDynamicPage() {
             className="card custom-card">
             <div className="card-header ">
                 <h1 className="card-title">
-                    {service.name} Verification
+                    {service.name}
                     {/* <span style={{
                     position: 'absolute',
                     bottom: '-0.5rem',

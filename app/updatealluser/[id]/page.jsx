@@ -100,7 +100,13 @@ export default function EditUserForm() {
             placeholder="Full Name"
             className="form-input"
             value={form.name}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              const regex = /^[a-zA-Z\s]*$/;
+              if (regex.test(value)) {
+                handleChange(e);
+              }
+            }}
             required
           />
         </div>
