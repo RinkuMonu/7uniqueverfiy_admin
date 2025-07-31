@@ -17,6 +17,7 @@ export default function WalletTopupForm() {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
   const [amount, setAmount] = useState('');
+  const [walletMode, setWalletMode] = useState('credentials');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +43,7 @@ export default function WalletTopupForm() {
       setLoading(true);
       const res = await axiosInstance.post("admin/wallet-topup", {
         userId: selectedUserId,
-        mode: "production",
+        mode: walletMode,
         amount: parseFloat(amount),
         description,
       });
@@ -101,8 +102,25 @@ export default function WalletTopupForm() {
                   }
                 }}
               />
-
             </div>
+
+            {/* Wallet Mode */}
+            <div className="form-group">
+              <label className="form-label">
+                Wallet Mode
+              </label>
+              <select
+                name="walletMode"
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={walletMode}
+                onChange={(e) => setWalletMode(e.target.value)}
+              >
+                <option value="production">Production</option>
+                <option value="credentials">Credentials</option>
+              </select>
+            </div>
+
             <div className="form-group">
               <label className="form-label">Description</label>
               <input
