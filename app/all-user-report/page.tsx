@@ -33,7 +33,7 @@ export default function AllUserReportPage() {
           search,
           service: serviceFilter,
           page,
-          limit:10,
+          limit: 10,
         },
       });
 
@@ -181,23 +181,24 @@ export default function AllUserReportPage() {
             <div className="card-body">
               <div className="table-responsive ">
                 <table className="table text-nowrap w-full">
-                  <thead className="brandorange-bg-light"><tr className="text-left">
-                    <th >
-                      Name
-                    </th>
-                    <th >
-                      Email
-                    </th>
-                    <th>
-                      Service
-                    </th>
-                    <th >
-                      Hit Count
-                    </th>
-                    <th>
-                      Total Charges
-                    </th>
-                  </tr> </thead>
+                  <thead className="brandorange-bg-light">
+                    <tr className="text-left">
+                      <th >
+                        Name
+                      </th>
+                      <th >
+                        Email
+                      </th>
+                      <th>
+                        Service
+                      </th>
+                      <th >
+                        Hit Count
+                      </th>
+                      <th>
+                        Total Charges
+                      </th>
+                    </tr> </thead>
 
                   <tbody className="">
                     {users.map((user) =>
@@ -221,7 +222,7 @@ export default function AllUserReportPage() {
 
                 </table>
 
-      
+
               </div> </div>
           </div>
 

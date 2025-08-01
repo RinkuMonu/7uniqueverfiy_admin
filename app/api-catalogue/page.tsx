@@ -565,7 +565,7 @@ export default function APICataloguePage() {
                       <input
                         type="text"
                         name="active_charge"
-                         maxLength={4}
+                        maxLength={4}
                         placeholder="Active Charge"
                         value={field.active_charge}
                         onChange={(e) => {
