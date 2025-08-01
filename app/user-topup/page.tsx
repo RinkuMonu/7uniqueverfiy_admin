@@ -13,7 +13,7 @@ export default function TopupRequestForm() {
     const [form, setForm] = useState({
         amount: "",
         mode: "UPI",
-        walletMode: "production",
+        walletMode: "credentials",
         description: "",
         vpa: "",
         accountName: "",
@@ -76,7 +76,7 @@ export default function TopupRequestForm() {
                 setForm({
                     amount: "",
                     mode: "UPI",
-                    walletMode: "production",
+                    walletMode: "credentials",
                     description: "",
                     vpa: "",
                     accountName: "",
@@ -98,162 +98,204 @@ export default function TopupRequestForm() {
     return (
         <form
             onSubmit={handleSubmit}
-            className="max-w-xl mx-auto bg-white shadow-xl p-8 rounded-xl space-y-6"
-            style={{ padding: '10px' }}
+            className="max-w-lg mx-auto bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100"
         >
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Request Wallet Top-Up</h2>
-
-            {/* Amount */}
-            <div style={{ padding: '0.7rem' }}>
-                <label className="block font-medium text-gray-700 mb-1">Amount <span className="text-red-500">*</span></label>
-                <input
-                    type="text"
-                    name="amount"
-                    value={form.amount}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter amount"
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            {/* Form Header */}
+            <div className="brandorange-bg p-6">
+                <h2 className="text-2xl font-bold text-white">Wallet Top-Up Request</h2>
+                <p className="text-white mt-1">Fill in the details to request funds</p>
             </div>
 
-            {/* Wallet Mode */}
-            <div style={{ padding: '0.7rem' }}>
-                <label className="block font-medium text-gray-700 mb-1">Wallet Mode <span className="text-red-500">*</span></label>
-                <select
-                    name="walletMode"
-                    value={form.walletMode}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    {walletModes.map((mode) => (
-                        <option key={mode} value={mode}>
-                            {mode.charAt(0).toUpperCase() + mode.slice(1)}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            <div className="p-6 space-y-5">
+                {/* Amount Field */}
+                <div className="space-y-1 pb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Amount <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                        <span className="absolute inset-y-0 left-2 flex items-center pl-3 text-gray-500">₹</span>
+                        <input
+                            type="text"
+                            name="amount"
+                            value={form.amount}
+                            onChange={handleChange}
+                            required
+                            placeholder="0.00"
+                            className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        />
+                    </div>
+                </div>
 
-            {/* Payment Mode */}
-            <div style={{ padding: '0.7rem' }}>
-                <label className="block font-medium text-gray-700 mb-1">Payment Mode <span className="text-red-500">*</span></label>
-                <select
-                    name="mode"
-                    value={form.mode}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                >
-                    <option value="UPI">UPI</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Wallet">Wallet</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            {/* UPI Fields */}
-            {form.mode === "UPI" && (
-                <div style={{ padding: '0.7rem' }}>
-                    <label className="block font-medium text-gray-700 mb-1">UPI VPA <span className="text-red-500">*</span></label>
-                    <input
-                        type="text"
-                        name="vpa"
-                        value={form.vpa}
+                {/* Wallet Mode */}
+                <div className="space-y-1 pb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Wallet Mode <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="walletMode"
+                        value={form.walletMode}
                         onChange={handleChange}
                         required
-                        placeholder="e.g. username@bank"
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    >
+                        {walletModes.map((mode) => (
+                            <option key={mode} value={mode}>
+                                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Payment Mode */}
+                <div className="space-y-1 pb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Payment Method <span className="text-red-500">*</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                        {["UPI", "Bank Transfer", "Cash", "Wallet", "Other"].map((method) => (
+                            <div key={method} className="flex items-center">
+                                <input
+                                    type="radio"
+                                    id={method}
+                                    name="mode"
+                                    value={method}
+                                    checked={form.mode === method}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                />
+                                <label htmlFor={method} className="ml-2 block text-sm text-gray-700">
+                                    {method}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Dynamic Fields based on Payment Method */}
+                <div className="space-y-4 pb-2">
+                    {/* UPI Fields */}
+                    {form.mode === "UPI" && (
+                        <div className="space-y-1">
+                            <label className="block text-sm font-medium text-gray-700">
+                                UPI ID <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="vpa"
+                                value={form.vpa}
+                                onChange={handleChange}
+                                required
+                                placeholder="username@bank"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Enter your UPI Virtual Payment Address</p>
+                        </div>
+                    )}
+
+                    {/* Bank Transfer Fields */}
+                    {form.mode === "Bank Transfer" && (
+                        <div className="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 className="font-medium text-gray-700">Bank Details</h3>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">Account Name</label>
+                                    <input
+                                        type="text"
+                                        name="accountName"
+                                        value={form.accountName}
+                                        onChange={handleChange}
+                                        placeholder="Full name"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">Account Number</label>
+                                    <input
+                                        type="text"
+                                        name="accountNumber"
+                                        value={form.accountNumber}
+                                        onChange={handleChange}
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        placeholder="Digits only"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="block text-sm font-medium text-gray-700">IFSC Code</label>
+                                <input
+                                    type="text"
+                                    name="ifscCode"
+                                    value={form.ifscCode}
+                                    onChange={handleChange}
+                                    placeholder="SBIN0001234"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg uppercase focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">Bank Name</label>
+                                    <input
+                                        type="text"
+                                        name="bankName"
+                                        value={form.bankName}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">Branch</label>
+                                    <input
+                                        type="text"
+                                        name="branch"
+                                        value={form.branch}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1 pb-2">
+                    <label className="block text-sm font-medium text-gray-700">Notes</label>
+                    <textarea
+                        name="description"
+                        value={form.description}
+                        onChange={handleChange}
+                        placeholder="Any additional information..."
+                        rows={3}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     />
                 </div>
-            )}
 
-            {/* Bank Transfer Fields */}
-            {form.mode === "Bank Transfer" && (
-                <>
-                    <div style={{ padding: '0.7rem' }}>
-                        <label className="block font-medium text-gray-700 mb-1">Account Name</label>
-                        <input
-                            type="text"
-                            name="accountName"
-                            value={form.accountName}
-                            onChange={handleChange}
-                            placeholder="Full name"
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
-                    </div>
-
-                    <div style={{ padding: '0.7rem' }}>
-                        <label className="block font-medium text-gray-700 mb-1">Account Number</label>
-                        <input
-                            type="text"
-                            name="accountNumber"
-                            value={form.accountNumber}
-                            onChange={handleChange}
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="Digits only"
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
-                    </div>
-
-                    <div style={{ padding: '0.7rem' }}>
-                        <label className="block font-medium text-gray-700 mb-1">IFSC Code</label>
-                        <input
-                            type="text"
-                            name="ifscCode"
-                            value={form.ifscCode}
-                            onChange={handleChange}
-                            placeholder="e.g. SBIN0001234"
-                            className="w-full px-4 py-2 border rounded-md uppercase"
-                        />
-                    </div>
-
-                    <div style={{ padding: '0.7rem' }}>
-                        <label className="block font-medium text-gray-700 mb-1">Bank Name</label>
-                        <input
-                            type="text"
-                            name="bankName"
-                            value={form.bankName}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
-                    </div>
-
-                    <div style={{ padding: '0.7rem' }}>
-                        <label className="block font-medium text-gray-700 mb-1">Branch</label>
-                        <input
-                            type="text"
-                            name="branch"
-                            value={form.branch}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
-                    </div>
-                </>
-            )}
-
-            {/* Description */}
-            <div style={{ padding: '0.7rem' }}>
-                <label className="block font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                    name="description"
-                    value={form.description}
-                    onChange={handleChange}
-                    placeholder="Add an optional note..."
-                    className="w-full px-4 py-2 border rounded-md"
-                />
+                {/* Submit Button */}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full brandorange-bg py-3 px-4 rounded-lg font-medium text-white transition ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'}`}
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center">
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                        </span>
+                    ) : (
+                        "Submit Request"
+                    )}
+                </button>
             </div>
-
-            {/* Submit Button */}
-            <button
-                type="submit"
-                disabled={loading}
-                className="w-full brandorange-bg-light brandorange-text py-3 rounded-md font-medium hover:bg-[#f9c4ad] transition"
-            >
-                {loading ? "Submitting..." : "Submit Top-Up Request"}
-            </button>
         </form>
     );
 }

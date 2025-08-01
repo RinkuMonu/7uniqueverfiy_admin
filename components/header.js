@@ -270,10 +270,12 @@ export default function Header({ isOpen, onToggle }) {
                   </div>
 
                   <div className={styles.profileMenu}>
-                    <Link href="/profile" className={styles.menuItem}>
-                      <UserCircle className="mr-2 h-5 w-5" />
-                      <span>My Profile</span>
-                    </Link>
+                    <div onClick={() => setShowProfile(false)}>
+                      <Link href="/profile" className={styles.menuItem}>
+                        <UserCircle className="mr-2 h-5 w-5" />
+                        <span>My Profile</span>
+                      </Link>
+                    </div>
 
                     {/* Uncomment if needed */}
                     {/* <Link href="/settings" className={styles.menuItem}>
@@ -282,10 +284,12 @@ export default function Header({ isOpen, onToggle }) {
         </Link> */}
 
                     {admin?.role === 'admin' && (
-                      <Link href="/all-user-report" className={styles.menuItem}>
-                        <FileText className="mr-2 h-5 w-5" />
-                        <span>Billing</span>
-                      </Link>
+                      <div onClick={() => setShowProfile(false)}>
+                        <Link href="/all-user-report" className={styles.menuItem}>
+                          <FileText className="mr-2 h-5 w-5" />
+                          <span>Billing</span>
+                        </Link>
+                      </div>
                     )}
 
                     <div className={styles.divider}></div>

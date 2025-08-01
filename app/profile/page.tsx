@@ -26,6 +26,7 @@ export default function UserProfilePage() {
             [name]: value,
         }));
     };
+    console.log(form);
 
     const handleSubmit = async () => {
         try {
@@ -71,39 +72,38 @@ export default function UserProfilePage() {
                     />
                 </div>
                 {!editMode && (
-                   
-                         <div className="col-span-12 lg:col-span-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-                        Auth Key
-                    </label>
-                    <Input
-                        id="auth"
-                        name="auth"
-                        value={form.auth || ""}
-                        onChange={handleChange}
-                        disabled={!editMode}
-                    />
-                </div>
-                
-                   
+                    <div className="col-span-12 lg:col-span-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                            JWT key
+                        </label>
+                        <Input
+                            id="jwt"
+                            name="jwt"
+                            value={form?.documents?.isVerified ? form?.production?.jwtSecret : form?.credentials?.jwtSecret || ""}
+                            onChange={handleChange}
+                            disabled={!editMode}
+                        />
+                    </div>
                 )}
-
                 {!editMode && (
-                     <div className="col-span-12 lg:col-span-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-                        JWT key
-                    </label>
-                    <Input
-                        id="jwt"
-                        name="jwt"
-                        value={form.jwt || ""}
-                        onChange={handleChange}
-                        disabled={!editMode}
-                    />
-                </div>
+
+                    <div className="col-span-12 lg:col-span-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                            Auth Key
+                        </label>
+                        <Input
+                            id="auth"
+                            name="auth"
+                            value={form?.documents?.isVerified ? form?.production?.authKey : form?.credentials?.authKey || ""}
+                            onChange={handleChange}
+                            disabled={!editMode}
+                        />
+                    </div>
+
+
                 )}
 
-                 <div className="col-span-12 lg:col-span-4">
+                <div className="col-span-12 lg:col-span-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
                         Email
                     </label>
@@ -116,7 +116,7 @@ export default function UserProfilePage() {
                     />
                 </div>
 
-                 <div className="col-span-12 lg:col-span-4">
+                <div className="col-span-12 lg:col-span-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="role">
                         Role
                     </label>
