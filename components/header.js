@@ -8,7 +8,7 @@ import { MainContext } from "@/app/context/context";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAdminDetails, logout } from "@/app/redux/reducer/AdminSlice";
 import { PiBellRingingLight } from "react-icons/pi";
-import { TestTube, Server } from "lucide-react";
+import { TestTube, Server, LogOut, User, FileText, UserCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import styles from './Header.module.css';
@@ -28,6 +28,7 @@ export default function Header({ isOpen, onToggle }) {
   const { admin } = useSelector(state => state.admin);
   const [environment, setEnvironment] = useState("uat");
   const [showUATModal, setShowUATModal] = useState(false);
+
 
 
   useEffect(
@@ -263,26 +264,42 @@ export default function Header({ isOpen, onToggle }) {
                       {getInitials(admin?.name)}
                     </div>
                     <div>
-                      <p className={styles.profileTitle} >{admin?.name}</p>
+                      <p className={styles.profileTitle}>{admin?.name}</p>
                       <p className={styles.profileEmail}>{admin?.email}</p>
                     </div>
                   </div>
+
                   <div className={styles.profileMenu}>
                     <Link href="/profile" className={styles.menuItem}>
+                      <UserCircle className="mr-2 h-5 w-5" />
                       <span>My Profile</span>
                     </Link>
+
+                    {/* Uncomment if needed */}
                     {/* <Link href="/settings" className={styles.menuItem}>
-                    <span>Account Settings</span>
-                  </Link> */}
-                    <Link href="/all-user-report" className={styles.menuItem}>
-                      <span>Billing</span>
-                    </Link>
+          <Settings className="mr-2 h-5 w-5" />
+          <span>Account Settings</span>
+        </Link> */}
+
+                    {admin?.role === 'admin' && (
+                      <Link href="/all-user-report" className={styles.menuItem}>
+                        <FileText className="mr-2 h-5 w-5" />
+                        <span>Billing</span>
+                      </Link>
+                    )}
+
                     <div className={styles.divider}></div>
+
                     <button
                       onClick={() => dispatch(logout())}
                       className={styles.logoutButton}
                     >
-                      Sign Out
+
+                      <div className="flex">
+
+                        <LogOut className="mr-2 h-5 w-5" />
+                        <span>Sign Out</span>
+                      </div>
                     </button>
                   </div>
                 </div>

@@ -112,7 +112,6 @@ export default function ServiceDynamicPage() {
 
             // console.log("⏳ Waiting for API response...");
             const result = await res.json();
-            console.log("📬 API Response:", result);
 
             if (result.success) {
                 console.log("🎉 Success response received. Fetching latest admin details...");
@@ -121,16 +120,19 @@ export default function ServiceDynamicPage() {
 
             setResponse(result);
 
-            const id = result.data?.data?.client_id || result.data?.data?.request_id || result.data?.data?.transaction_id || result.data?.data?.refid;
+            const keys = ["client_id", "request_id", "transaction_id", "refid"];
+            const foundKey = keys.find(key => result?.data?.data?.[key]);
 
-            if (id) {
+            if (foundKey) {
+                const id = result.data.data[foundKey];
                 dynamicIdRef.current = id;
 
-                setFormData((prev) => ({
+                setFormData(prev => ({
                     ...prev,
-                    client_id: id,
+                    [foundKey]: id,
                 }));
             }
+
 
         } catch (err) {
             console.error("❌ Submission error:", err);
