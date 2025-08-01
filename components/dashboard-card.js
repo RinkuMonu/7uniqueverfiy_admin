@@ -66,42 +66,42 @@ const ProductTabs = () => {
 
     paginate(filtered);
   };
-const handlePurchase = async (serviceId) => {
-  
-  try {
-    // Show SweetAlert confirmation first
-    const result = await swal.fire({
-      title: "Are you sure you want to buy this?",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    });
+  const handlePurchase = async (serviceId) => {
 
-    // Check if user confirmed
-    if (!result.isConfirmed) {
-      return; // User cancelled
+    try {
+      // Show SweetAlert confirmation first
+      const result = await swal.fire({
+        title: "Are you sure you want to Subscribe this?",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      });
+
+      // Check if user confirmed
+      if (!result.isConfirmed) {
+        return; // User cancelled
+      }
+
+      setLoading(true);
+      setMessage(null);
+
+      // API call
+      const { data } = await axiosInstance.post("/user/service-request", {
+        userId: admin._id,
+        serviceId,
+      });
+
+      setMessage({ type: "success", text: data.message });
+      dispatch(fetchAdminDetails());
+      // toast.success(data.message || "Purchase successful!");
+    } catch (error) {
+      const errMsg = error?.response?.data?.message || "Purchase request failed.";
+      setMessage({ type: "error", text: errMsg });
+      // toast.error(errMsg);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(true);
-    setMessage(null);
-
-    // API call
-    const { data } = await axiosInstance.post("/user/service-request", {
-      userId: admin._id,
-      serviceId,
-    });
-
-    setMessage({ type: "success", text: data.message });
-    dispatch(fetchAdminDetails());
-    // toast.success(data.message || "Purchase successful!");
-  } catch (error) {
-    const errMsg = error?.response?.data?.message || "Purchase request failed.";
-    setMessage({ type: "error", text: errMsg });
-    // toast.error(errMsg);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     dispatch(fetchAdminDetails());
@@ -176,76 +176,84 @@ const handlePurchase = async (serviceId) => {
           services.map((product) => (
             <article
               key={product._id}
-              className="rounded border  bg-white p-5 shadow-sm transition hover:shadow-lg"
+              className="rounded border bg-white p-5 shadow-sm transition hover:shadow-lg flex flex-col justify-between h-full"
             >
-              <div className="flex justify-between items-center mb-4">
-                <div className="bg-[#b7603d22] p-3 rounded-full brandorange-text shadow-inner">
-                  <i className="fas fa-video fa-sm"></i>
+              <div className="flex-grow">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="bg-[#b7603d22] p-3 rounded-full brandorange-text shadow-inner">
+                    <i className="fas fa-video fa-sm"></i>
+                  </div>
+                  <span className="bg-[#09333C10] brandcolor-text text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+                    New
+                  </span>
                 </div>
-                <span className="bg-[#09333C10] brandcolor-text text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-                  New
-                </span>
+
+                <h3 className="text-lg font-bold brandcolor-text mb-1 break-words">
+                  {product.name.toUpperCase()}
+                </h3>
+
+                <p className="text-sm text-[#09333Ccc] mb-2 line-clamp-3">
+                  {product.descreption || "No description available"}
+                </p>
               </div>
 
-              <h3 className="text-lg font-bold brandcolor-text mb-1 truncate">
-                {product.name.toUpperCase()}
-              </h3>
-
-              <p className="text-sm text-[#09333Ccc] mb-2 line-clamp-3">
-                {product.descreption || "No description available"}
-              </p>
-
               <div className="flex items-center justify-between mt-4">
-                <span className="text-base font-semibold brandorange-text">
-                  ₹ {product.charge}
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#C2410C] bg-[#FFEAD5] border border-[#FDBA74] px-3 py-1 rounded-full shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#EA580C]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 7H7v6h6V7z" />
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v6a1 1 0 102 0V7z" clipRule="evenodd" />
+                  </svg>
+                  ₹ {product.charge} / API hit
                 </span>
+
                 <button
-                  className="text-sm font-medium brandorange-bg text-white px-4 py-2 rounded-lg hover:bg-[#9e4d2e] transition"
+                  className="text-sm font-medium brandorange-bg text-white px-3 py-1 rounded-lg hover:bg-[#9e4d2e] transition"
                   onClick={() => handlePurchase(product._id)}
                 >
                   Subscribe
                 </button>
               </div>
             </article>
-//                       <article
-//   key={product._id}
-//   className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#b7603d]/20 group"
-// >
-//   {/* Decorative accent */}
-//   <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#b7603d] to-[#e3a88a]"></div>
 
-//   <div className="flex justify-between items-start mb-6">
-//     <div className="bg-[#f8ece6] p-3 rounded-xl group-hover:bg-[#b7603d] group-hover:text-white transition-colors duration-300">
-//       <i className="fas fa-video text-[#b7603d] group-hover:text-white transition-colors duration-300"></i>
-//     </div>
-//     <span className="bg-[#f8ece6] text-[#b7603d] text-xs font-semibold px-3 py-1 rounded-full">
-//       New
-//     </span>
-//   </div>
+            //                       <article
+            //   key={product._id}
+            //   className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#b7603d]/20 group"
+            // >
+            //   {/* Decorative accent */}
+            //   <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#b7603d] to-[#e3a88a]"></div>
 
-//   <div className="mb-6">
-//     <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#b7603d] transition-colors duration-300">
-//       {product.name.toUpperCase()}
-//     </h3>
-//     <p className="text-sm text-gray-600 line-clamp-3">
-//       {product.descreption || "No description available"}
-//     </p>
-//   </div>
+            //   <div className="flex justify-between items-start mb-6">
+            //     <div className="bg-[#f8ece6] p-3 rounded-xl group-hover:bg-[#b7603d] group-hover:text-white transition-colors duration-300">
+            //       <i className="fas fa-video text-[#b7603d] group-hover:text-white transition-colors duration-300"></i>
+            //     </div>
+            //     <span className="bg-[#f8ece6] text-[#b7603d] text-xs font-semibold px-3 py-1 rounded-full">
+            //       New
+            //     </span>
+            //   </div>
 
-//   <div className="flex items-center justify-between mt-auto">
-//     <div>
-//       <span className="text-gray-500 text-xs">STARTING AT</span>
-//       <span className="text-2xl font-bold text-[#b7603d] block">₹{product.charge}</span>
-//     </div>
-//     <button
-//       className="relative overflow-hidden bg-[#b7603d] text-white font-medium px-6 py-2.5 rounded-xl hover:bg-[#9e4d2e] transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group-hover:shadow-lg"
-//       onClick={() => handlePurchase(product._id)}
-//     >
-//       <span className="relative z-10">Subscribe</span>
-//       <span className="absolute inset-0 bg-gradient-to-r from-[#b7603d] to-[#e3a88a] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-//     </button>
-//   </div>
-// </article>
+            //   <div className="mb-6">
+            //     <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#b7603d] transition-colors duration-300">
+            //       {product.name.toUpperCase()}
+            //     </h3>
+            //     <p className="text-sm text-gray-600 line-clamp-3">
+            //       {product.descreption || "No description available"}
+            //     </p>
+            //   </div>
+
+            //   <div className="flex items-center justify-between mt-auto">
+            //     <div>
+            //       <span className="text-gray-500 text-xs">STARTING AT</span>
+            //       <span className="text-2xl font-bold text-[#b7603d] block">₹{product.charge}</span>
+            //     </div>
+            //     <button
+            //       className="relative overflow-hidden bg-[#b7603d] text-white font-medium px-6 py-2.5 rounded-xl hover:bg-[#9e4d2e] transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group-hover:shadow-lg"
+            //       onClick={() => handlePurchase(product._id)}
+            //     >
+            //       <span className="relative z-10">Subscribe</span>
+            //       <span className="absolute inset-0 bg-gradient-to-r from-[#b7603d] to-[#e3a88a] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            //     </button>
+            //   </div>
+            // </article>
 
           ))
         ) : (
