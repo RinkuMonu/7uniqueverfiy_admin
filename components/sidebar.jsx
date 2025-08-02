@@ -88,17 +88,20 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
     {
       id: "api-request",
       label: "API Requests",
-      icon: "bi bi-box-arrow-in-down", 
+      icon: "bi bi-box-arrow-in-down",
       href: "/api-request"
     },
-
     {
       id: "services",
       label: "Services",
-      icon: "bi bi-collection", // For a collection of services
-      children: admin?.services.map(data => (
-        { "id": data._id, "label": data.name, "data": data }
-      ))
+      icon: "bi bi-collection",
+      children: admin?.services
+        ?.filter(data => data.status === "active")
+        .map(data => ({
+          id: data._id,
+          label: data.name,
+          data: data
+        }))
     },
     {
       id: "projects",

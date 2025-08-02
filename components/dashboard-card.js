@@ -198,7 +198,7 @@ const ProductTabs = () => {
               </div>
 
               <div className="flex items-center justify-between mt-4">
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#C2410C] bg-[#FFEAD5] border border-[#FDBA74] px-3 py-1 rounded-full shadow-sm">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#C2410C] bg-[#FFEAD5] border border-[#FDBA74] px-2 py-1 rounded-full shadow-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#EA580C]" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M13 7H7v6h6V7z" />
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v6a1 1 0 102 0V7z" clipRule="evenodd" />

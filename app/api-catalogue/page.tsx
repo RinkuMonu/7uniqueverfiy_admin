@@ -30,6 +30,7 @@ export default function APICataloguePage() {
       name: "",
       charge: "",
       active_charge: "",
+      status: "",
       descreption: "",
       endpoint: "",
       method: "POST",
@@ -66,10 +67,14 @@ export default function APICataloguePage() {
 
   const handleChange = (index, e) => {
     const updated = [...formFields];
-    updated[index][e.target.name] =
+    const fieldName = e.target.name.replace(/-\d+$/, ""); // handles "status-0" → "status"
+    updated[index][fieldName] =
       e.target.type === "number" ? Number(e.target.value) : e.target.value;
     setFormFields(updated);
   };
+
+
+
 
   const handleFieldChange = (
     formIndex: number,
@@ -92,6 +97,7 @@ export default function APICataloguePage() {
         name: "",
         charge: "",
         active_charge: "",
+        status: "",
         descreption: "",
         endpoint: "",
         method: "POST",
@@ -132,6 +138,7 @@ export default function APICataloguePage() {
         name: api.name,
         charge: api.charge,
         active_charge: api.active_charge,
+        status: api.status,
         descreption: api.descreption,
         endpoint: api.endpoint,
         method: api.method,
@@ -183,6 +190,7 @@ export default function APICataloguePage() {
         name: "",
         charge: "",
         active_charge: "",
+        status: "",
         descreption: "",
         endpoint: "",
         method: "POST",
@@ -434,9 +442,6 @@ export default function APICataloguePage() {
                         <td className="p-3 text-sm font-mono text-gray-700">
                           ₹{matchedCharge?.customCharge ?? 0}
                         </td>
-                        {/* <td className="p-3 text-sm font-mono text-gray-700">
-                          ₹{api.active_charge}
-                        </td> */}
                         <td className="p-3 text-sm font-mono text-gray-700">
                           {api.endpoint}
                         </td>
@@ -614,6 +619,35 @@ export default function APICataloguePage() {
                         className="p-2 border rounded w-full  lg:w-auto"
                       />
                     </div>
+                    <div className="col-span-4 mb-3 lg:col-span-6 flex items-center gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`status-${index}`}
+
+                          value="active"
+                          checked={formFields[index].status === "active"}
+                          onChange={(e) => handleChange(index, e)}
+                          className="form-radio"
+                        />
+                        <span>Active</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`status-${index}`}
+
+                          value="inactive"
+                          checked={formFields[index].status === "inactive"}
+                          onChange={(e) => handleChange(index, e)}
+                          className="form-radio"
+                        />
+                        <span>Inactive</span>
+                      </label>
+                    </div>
+
+
                   </div>
 
                   <div className="mt-4">
@@ -686,8 +720,9 @@ export default function APICataloguePage() {
                       <FaMinus /> Remove API
                     </button>
                   )}
-                </div>
-              ))}
+                </div>)
+
+              )}
 
               {!showEdit && (
                 <button
