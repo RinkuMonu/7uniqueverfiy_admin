@@ -121,7 +121,7 @@ export default function TopupRequestForm() {
                             onChange={handleChange}
                             required
                             placeholder="0.00"
-                            className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                            className="w-full pl-8 pr-4 py-3 border border-gray-300 focus:outline-none rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
                         />
                     </div>
                 </div>
@@ -136,7 +136,7 @@ export default function TopupRequestForm() {
                         value={form.walletMode}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full px-4 py-3 border focus:outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     >
                         {walletModes.map((mode) => (
                             <option key={mode} value={mode}>
@@ -161,7 +161,7 @@ export default function TopupRequestForm() {
                                     value={method}
                                     checked={form.mode === method}
                                     onChange={handleChange}
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 "
                                 />
                                 <label htmlFor={method} className="ml-2 block text-sm text-gray-700">
                                     {method}
@@ -186,7 +186,7 @@ export default function TopupRequestForm() {
                                 onChange={handleChange}
                                 required
                                 placeholder="username@bank"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                className="w-full px-4 py-3 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                             />
                             <p className="text-xs text-gray-500 mt-1">Enter your UPI Virtual Payment Address</p>
                         </div>
@@ -206,7 +206,7 @@ export default function TopupRequestForm() {
                                         value={form.accountName}
                                         onChange={handleChange}
                                         placeholder="Full name"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
 
@@ -220,7 +220,7 @@ export default function TopupRequestForm() {
                                         inputMode="numeric"
                                         pattern="[0-9]*"
                                         placeholder="Digits only"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                             </div>
@@ -233,7 +233,7 @@ export default function TopupRequestForm() {
                                     value={form.ifscCode}
                                     onChange={handleChange}
                                     placeholder="SBIN0001234"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg uppercase focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-2 focus:outline-none border border-gray-300 rounded-lg uppercase focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
 
@@ -245,7 +245,7 @@ export default function TopupRequestForm() {
                                         name="bankName"
                                         value={form.bankName}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border focus:outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
 
@@ -256,7 +256,7 @@ export default function TopupRequestForm() {
                                         name="branch"
                                         value={form.branch}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                             </div>
@@ -273,7 +273,7 @@ export default function TopupRequestForm() {
                         onChange={handleChange}
                         placeholder="Any additional information..."
                         rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full px-4 py-2 border focus:outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     />
                 </div>
 
