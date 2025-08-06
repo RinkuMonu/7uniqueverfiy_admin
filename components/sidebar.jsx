@@ -94,19 +94,25 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
     {
       id: "services",
       label: "Services",
-      icon: "bi bi-collection",
-      children: admin?.services
-        ?.filter(data => data.status === "active")
-        .map(data => ({
-          id: data._id,
-          label: data.name,
-          data: data
-        }))
+      icon: "bi bi-diagram-3",
+      href: "/services"
     },
+    // {
+    //   id: "services",
+    //   label: "Services",
+    //   icon: "bi bi-collection",
+    //   children: admin?.services
+    //     ?.filter(data => data.status === "active")
+    //     .map(data => ({
+    //       id: data._id,
+    //       label: data.name,
+    //       data: data
+    //     }))
+    // },
     {
       id: "projects",
-      label: "My API",
-      icon: "bi bi-plug", // Represents API connections
+      label: "Subscribed APIs",
+      icon: "bi bi-cloud-check", // Represents API connections
       href: "/api-catalogue"
     },
     {
