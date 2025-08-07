@@ -199,9 +199,11 @@ export default function ServiceDynamicPage({ params }) {
                     }
                 });
                 setResponse(res.data);
+                console.log(res);
+
                 Swal.fire({
-                    icon: res.data?.status ? "success" : "error",
-                    title: "Success",
+                    icon: res.data?.status || res.data?.success ? "success" : "error",
+                    // title: "Success",
                     text: res.data?.message || "API called successfully!",
                 });
 
