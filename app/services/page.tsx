@@ -12,7 +12,8 @@ const ServicePage = () => {
     const [search, setSearch] = useState("");
     useEffect(
         () => {
-            setServices(admin?.services)
+            const service = admin?.services.filter(data => data.status == 'active');
+            setServices(service)
         }, [admin]
     )
 

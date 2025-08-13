@@ -391,6 +391,7 @@ export default function APICataloguePage() {
                   {/* <th className="">Active Charge</th> */}
                   <th className="">Custom Charge</th>
                   <th className="">Endpoint</th>
+                  <th className="">Status</th>
                   {admin?.role === "admin" && <th className="">Actions</th>}
                 </tr>{" "}
               </thead>
@@ -405,7 +406,7 @@ export default function APICataloguePage() {
                 ) : (
                   showService?.map((api, index) => {
                     const matchedCharge = admin?.customServiceCharges.find(
-                      charge => charge.service === api._id
+                      charge => charge.service === api?._id
                     );
                     return (
                       <tr
@@ -414,10 +415,10 @@ export default function APICataloguePage() {
                       >
                         <td className="p-3">
                           <div className="text-sm font-medium text-gray-700">
-                            {api.name}
+                            {api?.name}
                           </div>
                           <div className="text-xs text-gray-500">
-                            {api.descreption}
+                            {api?.descreption}
                           </div>
                         </td>
                         <td className="p-3">
@@ -437,13 +438,16 @@ export default function APICataloguePage() {
                           </span>
                         </td>
                         <td className="p-3 text-sm font-mono text-gray-700">
-                          ₹{api.charge}
+                          ₹{api?.charge}
                         </td>
                         <td className="p-3 text-sm font-mono text-gray-700">
                           ₹{matchedCharge?.customCharge ?? 0}
                         </td>
                         <td className="p-3 text-sm font-mono text-gray-700">
-                          {api.endpoint}
+                          {api?.endpoint}
+                        </td>
+                        <td className="p-3 text-sm font-mono text-gray-700">
+                          {api?.status}
                         </td>
 
                         {admin?.role === "admin" && (
