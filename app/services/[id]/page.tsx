@@ -47,6 +47,11 @@ export default function ServiceDynamicPage({ params }) {
             nextStep: "/verify_telecom_otp",
             needs: "client_id",
         },
+        "/aadhaar/eaadhaar/generate-otp": {
+            nextStep: "/aadhaar/eaadhaar/submit-otp",
+            needs: "client_id",
+        },
+       
 
         // bank-statement part
         "/bank-statement-analyzer/upload": {
@@ -191,7 +196,7 @@ export default function ServiceDynamicPage({ params }) {
                 }, envConfig?.jwtSecret);
 
                 setLoading(true);
-                const res = await axios.post(`https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`, payload, {
+                const res = await axios.post(`http://localhost:5050/api/verify/${service.endpoint}`, payload, {
                     headers: {
                         "client-id": envConfig.authKey,
                         "authorization": `Bearer ${token}`,
@@ -290,8 +295,8 @@ export default function ServiceDynamicPage({ params }) {
             // console.log("✅ JWT token generated");
 
             // Step 4: API call
-            // const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
-            const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
+            const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
+            // const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
             // console.log(`📡 Sending request to: ${endpointUrl}`);
             const res = await fetch(endpointUrl, {
                 method: "POST",
