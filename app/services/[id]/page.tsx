@@ -295,8 +295,8 @@ export default function ServiceDynamicPage({ params }) {
             // console.log("✅ JWT token generated");
 
             // Step 4: API call
-            const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
-            // const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
+            // const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
+            const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
             // console.log(`📡 Sending request to: ${endpointUrl}`);
             const res = await fetch(endpointUrl, {
                 method: "POST",
