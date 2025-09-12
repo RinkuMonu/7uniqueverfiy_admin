@@ -34,9 +34,9 @@ export const Context = ({ children }) => {
 
 
     // get all Services
-    const allService = async (page, limit, search, methodFilter, minCharge, maxCharge, activeOnly) => {
+    const allService = async (page, limit, search, methodFilter, minCharge, maxCharge, activeOnly, categoryFilter) => {
         try {
-            const res = await axiosInstance.get(`/admin/services?page=${page}&limit=${limit}&search=${search}&method=${methodFilter}&minCharge=${minCharge}&maxCharge=${maxCharge}&activeOnly=${activeOnly}`);
+            const res = await axiosInstance.get(`/admin/services?page=${page}&limit=${limit}&search=${search}&method=${methodFilter}&minCharge=${minCharge}&maxCharge=${maxCharge}&activeOnly=${activeOnly}&categoryFilter=${categoryFilter}`);
             setServices(res.data.services);
             setTotalPages(res.data.totalPages);
         } catch (error) {

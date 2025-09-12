@@ -8,6 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { fetchAdminDetails } from "@/app/redux/reducer/AdminSlice";
 import axios from "axios";
+import ApiResponseViewer from "../ApiResponseViewer";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+
 
 
 // Function to sign JWT with jose
@@ -51,7 +55,7 @@ export default function ServiceDynamicPage({ params }) {
             nextStep: "/aadhaar/eaadhaar/submit-otp",
             needs: "client_id",
         },
-       
+
 
         // bank-statement part
         "/bank-statement-analyzer/upload": {
@@ -196,7 +200,10 @@ export default function ServiceDynamicPage({ params }) {
                 }, envConfig?.jwtSecret);
 
                 setLoading(true);
-                const res = await axios.post(`http://localhost:5050/api/verify/${service.endpoint}`, payload, {
+
+                // const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
+                const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
+                const res = await axios.post(endpointUrl, payload, {
                     headers: {
                         "client-id": envConfig.authKey,
                         "authorization": `Bearer ${token}`,
@@ -310,6 +317,7 @@ export default function ServiceDynamicPage({ params }) {
             });
 
             const result = await res.json();
+            console.log(result);
 
             if (result.success) {
                 console.log("🎉 Success response received. Fetching latest admin details...");
@@ -420,24 +428,19 @@ export default function ServiceDynamicPage({ params }) {
 
         }}
             className="card custom-card">
-            <button onClick={() => window.history.back()} className="bg-orange-800 text-white px-3 py-2 rounded mb-4">
-                ← Use Another API
-            </button>
+            <Button
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="gap-2 hover:bg-orange-100 border-orange-200 text-orange-700 hover:text-orange-800"
+            >
+                <ArrowLeft className="h-4 w-4" />
+                Use Another API
+            </Button>
 
 
             <div className="card-header ">
-                <h1 className="card-title">
+                <h1 className="card-title ">
                     {service.name}
-                    {/* <span style={{
-                    position: 'absolute',
-                    bottom: '-0.5rem',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '5rem',
-                    height: '0.25rem',
-                    backgroundColor: '#dbeafe',
-                    borderRadius: '9999px'
-                }}></span> */}
                 </h1>
             </div>
             <div className="p-4 ">
@@ -445,7 +448,7 @@ export default function ServiceDynamicPage({ params }) {
                     !shouldAutoCall && (
                         <form onSubmit={handleSubmit} >
                             <div className="grid grid-cols-12 gap-4">
-                                {service.fields.map((field) => (
+                                {service?.fields?.map((field) => (
                                     ["client_id", "transaction_id", "request_id"].includes(field.name) ? (
                                         // Yeh hidden input hai
                                         <input
@@ -574,7 +577,7 @@ export default function ServiceDynamicPage({ params }) {
                                 </button>
                             </div>
                             {response && (
-                                <div style={{
+                                <div className="mt-6" style={{
                                     marginTop: '1.5rem',
                                     padding: '1.5rem',
                                     backgroundColor: '#f9fafb',
@@ -584,71 +587,8 @@ export default function ServiceDynamicPage({ params }) {
                                     transform: 'scale(1)',
                                     alignSelf: 'flex-start',  // Align to top of container
                                     maxWidth: '1000px'
-                                }}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.transform = 'scale(1.005)';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.transform = 'scale(1)';
-                                    }}
-                                >
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        <h2 style={{
-                                            fontSize: '1.125rem',
-                                            fontWeight: '600',
-                                            color: '#1f2937',
-                                            display: 'flex',
-                                            alignItems: 'center'
-                                        }}>
-                                            <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem', color: '#2563eb' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Response
-                                        </h2>
-                                        <button
-                                            onClick={() => setResponse(null)}
-                                            style={{
-                                                color: '#9ca3af',
-                                                background: 'none',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                transition: 'color 0.2s ease'
-                                            }}
-                                            onMouseOver={(e) => {
-                                                e.target.style.color = '#4b5563';
-                                            }}
-                                            onMouseOut={(e) => {
-                                                e.target.style.color = '#9ca3af';
-                                            }}
-                                        >
-                                            <svg style={{ width: '1.25rem', height: '1.25rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div style={{
-                                        overflow: 'auto',
-                                        maxHeight: '15rem',
-                                        backgroundColor: 'white',
-                                        padding: '1rem',
-                                        borderRadius: '0.25rem',
-                                        border: '1px solid #f3f4f6'
-                                    }}>
-                                        <pre style={{
-                                            whiteSpace: 'pre-wrap',
-                                            color: '#374151',
-                                            fontSize: '0.875rem',
-                                            margin: 0
-                                        }}>
-                                            {JSON.stringify(response.message, null, 2)}
-                                            {JSON.stringify(response.data, null, 2)}
-                                        </pre>
-                                    </div>
+                                }}>
+                                    <ApiResponseViewer response={response} />
                                 </div>
                             )}
 
