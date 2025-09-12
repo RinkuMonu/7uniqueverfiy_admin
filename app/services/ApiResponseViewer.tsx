@@ -73,10 +73,6 @@ const ApiResponseViewer: React.FC<ApiResponseViewerProps> = ({ response }) => {
         .join("")}
         </tbody>
       </table>
-
-      <div style="text-align: center; font-size: 10px; color: #999; margin-top: 34px;">
-        © ${new Date().getFullYear()} | Auto-generated Report
-      </div>
     </div>
   `;
 
