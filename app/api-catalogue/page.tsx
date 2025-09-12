@@ -538,7 +538,7 @@ export default function APICataloguePage() {
 
       {/* Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="max-w-4xl ">
+        <DialogContent className=" ">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2" style={{ color: "#ca6f4aff" }}>
               <FaServer className="h-5 w-5 " />
