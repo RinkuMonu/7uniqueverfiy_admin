@@ -6,6 +6,15 @@ import { MainContext } from "../context/context";
 import axiosInstance from "@/components/service/axiosInstance";
 import { FaEdit, FaPlus, FaMinus, FaServer } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import "./style.css";
 import { PiTrashLight } from "react-icons/pi";
@@ -19,6 +28,7 @@ export default function APICataloguePage() {
   const [editId, setEditId] = useState(null);
   const [search, setSearch] = useState("");
   const [methodFilter, setMethodFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [minCharge, setMinCharge] = useState("");
   const [maxCharge, setMaxCharge] = useState("");
   const [activeOnly, setActiveOnly] = useState(false);
@@ -31,6 +41,8 @@ export default function APICataloguePage() {
       charge: "",
       active_charge: "",
       status: "",
+      category: "",
+      source: "",
       descreption: "",
       endpoint: "",
       method: "POST",
@@ -52,7 +64,8 @@ export default function APICataloguePage() {
       methodFilter,
       minCharge,
       maxCharge,
-      activeOnly
+      activeOnly,
+      categoryFilter
     );
   }, [
     page,
@@ -63,9 +76,11 @@ export default function APICataloguePage() {
     minCharge,
     maxCharge,
     activeOnly,
+    categoryFilter
   ]);
 
   const handleChange = (index, e) => {
+
     const updated = [...formFields];
     const fieldName = e.target.name.replace(/-\d+$/, ""); // handles "status-0" → "status"
     updated[index][fieldName] =
@@ -98,6 +113,8 @@ export default function APICataloguePage() {
         charge: "",
         active_charge: "",
         status: "",
+        category: "",
+        source: "",
         descreption: "",
         endpoint: "",
         method: "POST",
@@ -139,6 +156,8 @@ export default function APICataloguePage() {
         charge: api.charge,
         active_charge: api.active_charge,
         status: api.status,
+        category: api.category,
+        source: api.source,
         descreption: api.descreption,
         endpoint: api.endpoint,
         method: api.method,
@@ -174,7 +193,8 @@ export default function APICataloguePage() {
         methodFilter,
         minCharge,
         maxCharge,
-        activeOnly
+        activeOnly,
+        categoryFilter
       );
     } catch (error) {
       tostymsg(error.response?.data?.message || "Something went wrong", 0);
@@ -191,6 +211,8 @@ export default function APICataloguePage() {
         charge: "",
         active_charge: "",
         status: "",
+        category: "",
+        source: "",
         descreption: "",
         endpoint: "",
         method: "POST",
@@ -299,6 +321,31 @@ export default function APICataloguePage() {
             </div>
 
             <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "6px",
+                border: "1px solid #D1D5DB",
+                fontSize: "14px",
+                flex: 1,
+              }}
+              className="py-1"
+            >
+              <option value="">All Categories</option>
+              <option value="banking">Banking</option>
+              <option value="employment">Employment</option>
+              <option value="esign">eSign</option>
+              <option value="identity">Identity</option>
+              <option value="merchant">Merchant</option>
+              <option value="osv">OSV</option>
+              <option value="sms">SMS</option>
+              <option value="vision">Vision</option>
+              <option value="financial">Financial</option>
+              <option value="utilities">Utilities</option>
+            </select>
+
+            <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value)}
               style={{
@@ -347,83 +394,61 @@ export default function APICataloguePage() {
                 className="py-1"
               />
             </div>
-
-            {/* <button
-        onClick={() => allService(page, limit, search, methodFilter, minCharge, maxCharge, activeOnly)}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          borderRadius: '6px',
-          backgroundColor: '#2563eb',
-          padding: '8px 12px',
-          fontSize: '14px',
-          fontWeight: 500,
-          color: 'white',
-          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-          cursor: 'pointer',
-          border: 'none',
-          outline: 'none',
-          transition: 'background-color 0.2s',
-          flex: 0.5
-        }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-      >
-        Apply Filters
-      </button> */}
           </div>
 
         </div>
       )}
 
-      <div className="card custom-card">
-        <div className="card-header justify-content-between">
-          <div className="card-title"> Catalouge Table </div>
+      <div className="card custom-card shadow-md rounded-2xl overflow-hidden bg-white">
+        {/* Header */}
+        <div className="card-header flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 className="text-lg font-semibold text-gray-800">Catalogue Table</h2>
         </div>
+
+        {/* Body */}
         <div className="card-body">
-          <div className="table-responsive ">
-            <table className="table text-nowrap w-full">
-              <thead className="brandorange-bg-light">
-                <tr className="text-left">
-                  <th className="">API Name</th>
-                  <th className="">Method</th>
-                  <th className="">Charge</th>
-                  {/* <th className="">Active Charge</th> */}
-                  <th className="">Custom Charge</th>
-                  <th className="">Endpoint</th>
-                  <th className="">Status</th>
-                  {admin?.role === "admin" && <th className="">Actions</th>}
-                </tr>{" "}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left border-collapse">
+              <thead className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3">API Name</th>
+                  <th className="px-4 py-3">Method</th>
+                  <th className="px-4 py-3">Charge</th>
+                  <th className="px-4 py-3">Custom Charge</th>
+                  <th className="px-4 py-3">Description</th>
+                  <th className="px-4 py-3">Status</th>
+                  {admin?.role === "admin" && <th className="px-4 py-3">Actions</th>}
+                </tr>
               </thead>
 
-              <tbody className="">
+              <tbody className="divide-y divide-gray-200">
                 {showService?.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-6 text-center text-gray-500">
+                    <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
                       No APIs found.
                     </td>
                   </tr>
                 ) : (
                   showService?.map((api, index) => {
                     const matchedCharge = admin?.customServiceCharges.find(
-                      charge => charge.service === api?._id
+                      (charge) => charge.service === api?._id
                     );
                     return (
                       <tr
                         key={index}
-                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                        className="hover:bg-gray-50 transition-colors"
                       >
-                        <td className="p-3">
-                          <div className="text-sm font-medium text-gray-700">
+                        {/* API Name */}
+                        <td className="px-4 py-3 max-w-xs">
+                          <p className="text-sm font-medium text-gray-800 truncate">
                             {api?.name}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {api?.descreption}
-                          </div>
+                          </p>
                         </td>
-                        <td className="p-3">
+
+                        {/* Method */}
+                        <td className="px-4 py-3">
                           <span
-                            className="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                            className="inline-flex px-2.5 py-1 text-xs font-medium rounded-full"
                             style={
                               getMethodClass(api.method).includes("green")
                                 ? { backgroundColor: "#DCFCE7", color: "#166534" }
@@ -437,33 +462,34 @@ export default function APICataloguePage() {
                             {api.method}
                           </span>
                         </td>
-                        <td className="p-3 text-sm font-mono text-gray-700">
+
+                        {/* Charges */}
+                        <td className="px-4 py-3 font-mono text-gray-700">
                           ₹{api?.charge}
                         </td>
-                        <td className="p-3 text-sm font-mono text-gray-700">
+                        <td className="px-4 py-3 font-mono text-gray-700">
                           ₹{matchedCharge?.customCharge ?? 0}
                         </td>
-                        <td className="p-3 text-sm font-mono text-gray-700">
-                          {api?.endpoint}
-                        </td>
-                        <td className="p-3 text-sm font-mono text-gray-700">
-                          {api?.status}
+
+                        {/* Description */}
+                        <td className="px-4 py-3 max-w-sm">
+                          <textarea
+                            value={api?.descreption || ""}
+                            readOnly
+                            rows={2}
+                            className="w-full resize-none bg-transparent border border-gray-200 rounded-md px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                          />
                         </td>
 
+                        {/* Status */}
+                        <td className="px-4 py-3 text-gray-700">{api?.status}</td>
+
+                        {/* Actions */}
                         {admin?.role === "admin" && (
-                          <td className="p-3">
+                          <td className="px-4 py-3">
                             <button
                               onClick={() => openEditModal(api)}
-                              style={{
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                fontSize: "12px",
-                                fontWeight: 500,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                              className="brandorange-bg-light brandorange-text"
+                              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-100 rounded-lg hover:bg-orange-200 transition-colors"
                             >
                               <FaEdit size={12} />
                               Edit
@@ -471,292 +497,325 @@ export default function APICataloguePage() {
                           </td>
                         )}
                       </tr>
-                    )
-
+                    );
                   })
                 )}
               </tbody>
             </table>
+          </div>
 
-            {
-              admin?.role == 'admin' ?
-                <div className="flex justify-between items-center p-2">
-                  <button
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    style={{
-                      padding: "8px 16px",
-                      borderRadius: "6px",
-                      backgroundColor: page <= 1 ? "#fde8df" : "#f9c4ad",
-                      color: page <= 1 ? "white" : "#b7603d",
-                      cursor: page <= 1 ? "not-allowed" : "pointer",
-                      border: "none",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-500">
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                    style={{
-                      padding: "8px 16px",
-                      borderRadius: "6px",
-                      backgroundColor: page >= totalPages ? "#fde8df" : "#f9c4ad",
-                      color: page >= totalPages ? "white" : "#b7603d",
-                      cursor: page >= totalPages ? "not-allowed" : "pointer",
-                      border: "none",
-                      fontSize: "14px",
-                    }}
-                    className="hover:background-[#f9c4ad] brandorange-bg-light brandorange-text"
-                  >
-                    Next
-                  </button>
-                </div> : ""
-            }
-          </div>{" "}
+          {/* Pagination */}
+          {admin?.role === "admin" && (
+            <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${page <= 1
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                  }`}
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-500">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${page >= totalPages
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                  }`}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
+
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-2">
-          <div
-            className="absolute inset-0"
-            onClick={() => setShowModal(false)}
-          ></div>
-          <div className="card custom-card mb-6 relative z-10 bg-white max-w-md rounded-lg shadow-lg" style={{ width: "70%" }}>
-            <div className="flex items-center justify-between card-header">
-              <h2 className="card-title">
-                {showEdit ? "Edit API" : "Create API(s)"}
-              </h2>
-              <button onClick={() => setShowModal(false)}>❌</button>
-            </div>
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="max-w-4xl ">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2" style={{ color: "#ca6f4aff" }}>
+              <FaServer className="h-5 w-5 " />
+              {showEdit ? "Edit API" : "Create New API"}
+            </DialogTitle>
+          </DialogHeader>
 
-            <form className="p-4 space-y-4" onSubmit={handleSubmit} style={{ overflowY: "scroll", height: "calc(100vh - 150px)" }}>
-              {formFields.map((field, index) => (
-                <div key={index} className="  pb-4 ">
-                  <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <input
-                        type="text"
-                        name="name"
-                        placeholder="API Name"
-                        value={field.name}
-                        onChange={(e) => handleChange(index, e)}
-                        required
-                        className="p-2 border rounded w-full  lg:w-auto"
-                      />
-                    </div>
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <input
-                        type="text"
-                        name="charge"
-                        placeholder="Charge"
-                        maxLength={4}
-                        value={field.charge}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const regex = /^\d*\.?\d*$/;
-                          if (regex.test(value)) {
-                            handleChange(index, e);
-                          }
-                        }}
-                        required
-                        className="p-2 border rounded w-full lg:w-auto"
-                      />
-
-                    </div>
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <input
-                        type="text"
-                        name="active_charge"
-                        maxLength={4}
-                        placeholder="Active Charge"
-                        value={field.active_charge}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const regex = /^\d*\.?\d*$/;
-                          if (regex.test(value)) {
-                            handleChange(index, e);
-                          }
-                        }}
-                        required
-                        className="p-2 border rounded w-full  lg:w-auto"
-                      />
-                    </div>
-
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <input
-                        type="text"
-                        name="endpoint"
-                        placeholder="/api/endpoint"
-                        value={field.endpoint}
-                        onChange={(e) => handleChange(index, e)}
-                        required
-                        className="p-2 border rounded w-full  lg:w-auto"
-                      />
-                    </div>
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <select
-                        name="method"
-                        value={field.method}
-                        onChange={(e) => handleChange(index, e)}
-                        className="p-2 border rounded w-full  lg:w-auto"
-                      >
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="DELETE">DELETE</option>
-                      </select>
-                    </div>
-                    <div className="col-span-4 mb-3 lg:col-span-6">
-                      <textarea
-                        name="descreption"
-                        placeholder="Description"
-                        value={field.descreption}
-                        onChange={(e) => handleChange(index, e)}
-                        rows={1}
-                        className="p-2 border rounded w-full  lg:w-auto"
-                      />
-                    </div>
-                    <div className="col-span-4 mb-3 lg:col-span-6 flex items-center gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`status-${index}`}
-
-                          value="active"
-                          checked={formFields[index].status === "active"}
-                          onChange={(e) => handleChange(index, e)}
-                          className="form-radio"
-                        />
-                        <span>Active</span>
-                      </label>
-
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`status-${index}`}
-
-                          value="inactive"
-                          checked={formFields[index].status === "inactive"}
-                          onChange={(e) => handleChange(index, e)}
-                          className="form-radio"
-                        />
-                        <span>Inactive</span>
-                      </label>
-                    </div>
-
-
+          <form onSubmit={handleSubmit} className="space-y-6 max-h-[90vh] overflow-y-auto">
+            {formFields.map((field, index) => (
+              <div key={index} className="space-y-4 p-4 border rounded-lg bg-card">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`name-${index}`}>API Name</Label>
+                    <Input
+                      id={`name-${index}`}
+                      name="name"
+                      placeholder="Enter API name"
+                      value={field.name}
+                      onChange={(e) => handleChange(index, e)}
+                      required
+                    />
                   </div>
 
-                  <div className="mt-4">
-                    <h4 className="font-medium">Fields:</h4>
-                    {field.fields.map((f, i) => (
-                      <div key={i} className="flex gap-2 mb-2">
-                        <input
-                          type="text"
-                          name="label"
-                          placeholder="Label"
-                          value={f.label}
-                          onChange={(e) => handleFieldChange(index, i, e)}
-                          className="p-2 border rounded w-full"
-                        />
-                        <input
-                          type="text"
-                          name="name"
-                          placeholder="Field Name"
-                          value={f.name}
-                          onChange={(e) => handleFieldChange(index, i, e)}
-                          className="p-2 border rounded w-full"
-                        />
+                  <div className="space-y-2">
+                    <Label htmlFor={`charge-${index}`}>Charge</Label>
+                    <Input
+                      id={`charge-${index}`}
+                      name="charge"
+                      type="number"
+                      placeholder="0.00"
+                      value={field.charge}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        const regex = /^\d*\.?\d*$/
+                        if (regex.test(value)) {
+                          handleChange(index, e)
+                        }
+                      }}
+                      required
+                    />
+                  </div>
 
-                        <select
-                          name="type"
-                          value={f.type}
-                          onChange={(e) => handleFieldChange(index, i, e)}
-                          className=" p-2 border rounded w-full"
-                        >
-                          <option value="text">Text</option>
-                          <option value="number">Number</option>
-                          <option value="file">File</option>
-                        </select>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            name="required"
-                            checked={f.required}
+                  <div className="space-y-2">
+                    <Label htmlFor={`active_charge-${index}`}>Active Charge</Label>
+                    <Input
+                      id={`active_charge-${index}`}
+                      name="active_charge"
+                      type="number"
+                      placeholder="0.00"
+                      value={field.active_charge}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        const regex = /^\d*\.?\d*$/
+                        if (regex.test(value)) {
+                          handleChange(index, e)
+                        }
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`endpoint-${index}`}>Endpoint</Label>
+                    <Input
+                      id={`endpoint-${index}`}
+                      name="endpoint"
+                      placeholder="/api/endpoint"
+                      value={field.endpoint}
+                      onChange={(e) => handleChange(index, e)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`method-${index}`}>Method</Label>
+                    <Select
+                      value={field.method}
+                      onValueChange={(value) => handleChange(index, { target: { name: "method", value } })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="GET">GET</SelectItem>
+                        <SelectItem value="POST">POST</SelectItem>
+                        <SelectItem value="PUT">PUT</SelectItem>
+                        <SelectItem value="DELETE">DELETE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`category-${index}`}>Category</Label>
+                    <Select
+                      value={field.category}
+                      onValueChange={(value) => handleChange(index, { target: { name: "category", value } })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="banking">Banking</SelectItem>
+                        <SelectItem value="employment">Employment</SelectItem>
+                        <SelectItem value="esign">eSign</SelectItem>
+                        <SelectItem value="identity">Identity</SelectItem>
+                        <SelectItem value="merchant">Merchant</SelectItem>
+                        <SelectItem value="osv">OSV</SelectItem>
+                        <SelectItem value="sms">SMS</SelectItem>
+                        <SelectItem value="vision">Vision</SelectItem>
+                        <SelectItem value="financial">Financial</SelectItem>
+                        <SelectItem value="utilities">Utilities</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`source-${index}`}>Source</Label>
+                    <Select
+                      value={field.source}
+                      onValueChange={(value) => handleChange(index, { target: { name: "source", value } })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sprintverify">Sprint Verify</SelectItem>
+                        <SelectItem value="surpass">Surpass</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`status-${index}`}>Status</Label>
+                    <Select
+                      value={field.status}
+                      onValueChange={(value) => handleChange(index, { target: { name: "status", value } })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                    <Label htmlFor={`descreption-${index}`}>Description</Label>
+                    <Textarea
+                      id={`descreption-${index}`}
+                      name="descreption"
+                      placeholder="Enter API description"
+                      value={field.descreption}
+                      onChange={(e) => handleChange(index, e)}
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">API Fields</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addInputField(index)}
+                      className="flex items-center gap-2"
+                    >
+                      <FaPlus className="h-3 w-3" />
+                      Add Field
+                    </Button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {field.fields.map((f: any, i: number) => (
+                      <div key={i} className="flex gap-3 items-end p-3 bg-muted/30 rounded-lg">
+                        <div className="flex-1 space-y-2">
+                          <Label className="text-xs">Label</Label>
+                          <Input
+                            name="label"
+                            placeholder="Field label"
+                            value={f.label}
                             onChange={(e) => handleFieldChange(index, i, e)}
                           />
-                          Required
-                        </label>
-                        {field.fields.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeInputField(index, i)}
-                            className=" text-red-600 text-sm flex items-center gap-1"
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <Label className="text-xs">Name</Label>
+                          <Input
+                            name="name"
+                            placeholder="field_name"
+                            value={f.name}
+                            onChange={(e) => handleFieldChange(index, i, e)}
+                          />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <Label className="text-xs">Type</Label>
+                          <Select
+                            value={f.type}
+                            onValueChange={(value) => handleFieldChange(index, i, { target: { name: "type", value } })}
                           >
-                            <PiTrashLight />
-                          </button>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="text">Text</SelectItem>
+                              <SelectItem value="number">Number</SelectItem>
+                              <SelectItem value="file">File</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex items-center space-x-2 pb-2">
+                          <Checkbox
+                            id={`required-${index}-${i}`}
+                            checked={f.required}
+                            onCheckedChange={(checked) =>
+                              handleFieldChange(index, i, { target: { name: "required", type: "checkbox", checked } })
+                            }
+                          />
+                          <Label htmlFor={`required-${index}-${i}`} className="text-xs">
+                            Required
+                          </Label>
+                        </div>
+                        {field.fields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeInputField(index, i)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <PiTrashLight className="h-4 w-4" />
+                          </Button>
                         )}
-
                       </div>
                     ))}
-                    <button
-                      type="button"
-                      onClick={() => addInputField(index)}
-                      className="brandorange-text text-sm flex items-center gap-1 mt-2"
-                    >
-                      <FaPlus /> Add Input Field
-                    </button>
                   </div>
+                </div>
 
-                  {!showEdit && formFields.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeField(index)}
-                      className="text-sm text-red-600 hover:underline mt-2 flex items-center gap-1"
-                    >
-                      <FaMinus /> Remove API
-                    </button>
-                  )}
-                </div>)
-
-              )}
-
-              {!showEdit && (
-                <button
-                  type="button"
-                  onClick={addField}
-                  className="flex items-center gap-1 text-sm brandorange-text hover:underline"
-                >
-                  <FaPlus /> Add Another API
-                </button>
-              )}
-
-              <div className="flex justify-end mt-4 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 brandorange-text brandorange-bg-light rounded "
-                >
-                  {showEdit ? "Update" : "Create"}
-                </button>
+                {!showEdit && formFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => removeField(index)}
+                    className="text-destructive hover:text-destructive flex items-center gap-2"
+                  >
+                    <FaMinus className="h-3 w-3" />
+                    Remove API
+                  </Button>
+                )}
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            ))}
+
+            {!showEdit && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addField}
+                className="flex items-center gap-2 bg-transparent"
+              >
+                <FaPlus className="h-4 w-4" />
+                Add Another API
+              </Button>
+            )}
+
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-700 text-primary-foreground">
+                {showEdit ? "Update API" : "Create API"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

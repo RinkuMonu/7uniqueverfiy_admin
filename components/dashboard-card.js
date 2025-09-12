@@ -203,7 +203,7 @@ const ProductTabs = () => {
                     <path d="M13 7H7v6h6V7z" />
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v6a1 1 0 102 0V7z" clipRule="evenodd" />
                   </svg>
-                  ₹ {product.charge} / API hit
+                  ₹ {product.charge} / hit
                 </span>
 
                 <button
