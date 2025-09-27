@@ -163,12 +163,107 @@ export default function ServiceDynamicPage({ params }) {
             nextStepOptions: [],
             label: "Get 26AS (TDS) Details",
             needs: "client_id"
-        }
+        },
+
+        // surepass 
+
+        "/itr/create-client": {
+            nextStepOptions: [
+                { step: "/itr/check-credentials", label: "Get 26AS (TDS) List" },
+                { step: "/itr/download-profile", label: "download profile" },
+                { step: "/itr/download-itr", label: "download itr" },
+                { step: "/itr/download-26as", label: "download 26as" },
+                { step: "/itr/download-itr-v", label: "download itr v" },
+                { step: "/itr/forget-password", label: "Forgot Password" },
+                { step: "/itr/submit-otp", label: "Submit OTP" },
+                { step: "/itr/get-profile", label: "Get ITR Profile Details" },
+                { step: "/itr/get-itr-details", label: "Get Single ITR Details" },
+                { step: "/itr/get-26as-details/itr_LkksSlHruoCsxgigbaol", label: "Get 26AS (TDS) Details" },
+                { step: "/itr/download-ais-v2", label: "Download ITR" },
+                { step: "/itr/get-ais", label: "Get AIS" }
+
+
+            ],
+            label: "Create ITR Client",
+            needs: "client_id"
+        },
+
+        "/itr/check-credentials": {
+            nextStepOptions: [{ step: "itr-download-profile", label: "Download Profile" }],
+            label: "Get 26AS (TDS) List",
+            needs: "client_id"
+        },
+
+        "/itr/download-profile": {
+            nextStepOptions: [{ step: "itr-download-itr", label: "Download ITR" }],
+            label: "Download Profile",
+            needs: "client_id"
+        },
+
+        "/itr/download-itr": {
+            nextStepOptions: [{ step: "itr-download-26as", label: "Download 26AS" }],
+            label: "Download ITR",
+            needs: "client_id"
+        },
+
+        "/itr/download-26as": {
+            nextStepOptions: [{ step: "itr-download-itr-v", label: "Download ITR V" }],
+            label: "Download 26AS",
+            needs: "client_id"
+        },
+
+        "/itr/download-itr-v": {
+            nextStepOptions: [{ step: "itr-forget-password", label: "Income Tax Return – Forgot Password" }],
+            label: "Download ITR V",
+            needs: "client_id"
+        },
+
+        "/itr/forget-password": {
+            nextStepOptions: [{ step: "itr-submit-otp", label: "Income Tax Return – Submit OTP" }],
+            label: "Income Tax Return – Forgot Password",
+            needs: "client_id"
+        },
+
+        "/itr/submit-otp": {
+            nextStepOptions: [{ step: "itr-get-profile", label: "Get ITR Profile Details" }],
+            label: "Income Tax Return – Submit OTP",
+            needs: "client_id"
+        },
+
+        "/itr/get-profile": {
+            nextStepOptions: [{ step: "itr-get-itr-details", label: "Get Single ITR Details" }],
+            label: "Get ITR Profile Details",
+            needs: "client_id"
+        },
+
+        "/itr/get-itr-details": {
+            nextStepOptions: [{ step: "get-26as", label: "Get 26AS (TDS) Details" }],
+            label: "Get Income Tax Return List",
+            needs: "client_id"
+        },
+
+        "/itr/get-26as-details/itr_LkksSlHruoCsxgigbaol": {
+            nextStepOptions: [
+                { step: "itr-download-ais-v2", label: "Download ITR" }
+            ],
+            label: "Get 26AS (TDS) Details",
+            needs: "client_id"
+        },
+
+        "/itr/download-ais-v2": {
+            nextStepOptions: [
+                { step: "v1-itr-get-ais", label: "Get AIS" }
+            ],
+            label: "Download AIS V2",
+            needs: "client_id"
+        },
+
+        "/itr/get-ais": {
+            nextStepOptions: [],
+            label: "Get AIS",
+            needs: "client_id"
+        },
     };
-
-
-
-
     const refIds = useRef({
         client_id: "",
         transaction_id: "",
@@ -364,6 +459,17 @@ export default function ServiceDynamicPage({ params }) {
                             confirmButtonText: "Continue",
                             showCancelButton: true,
 
+                            // 🔹 Inline styling
+                            width: "800px",
+                            didOpen: () => {
+                                const radioContainer = Swal.getPopup().querySelector(".swal2-radio");
+                                if (radioContainer) {
+                                    radioContainer.style.display = "grid";
+                                    radioContainer.style.gridTemplateColumns = "repeat(2, 1fr)"; // 2 columns
+                                    radioContainer.style.gap = "10px";
+                                    radioContainer.style.textAlign = "left";
+                                }
+                            }
                         });
 
                         if (isConfirmed && value) {
