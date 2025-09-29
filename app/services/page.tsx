@@ -40,7 +40,7 @@ const ServicePage = () => {
     console.log(services);
 
     // extract unique categories for dropdown
-    const categories = ["all", ...new Set(services.map((s) => s.category))];
+    const categories = ["all", ...new Set(services?.map((s) => s.category))];
 
 
     return (

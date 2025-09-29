@@ -40,7 +40,6 @@ export default function ServiceDynamicPage({ params }) {
 
 
     const apiFlowMap = {
-
         // aadhat part
         "/adhar/send/otp": {
             nextStep: "/adhar/verify/otp",
@@ -55,8 +54,6 @@ export default function ServiceDynamicPage({ params }) {
             nextStep: "/aadhaar/eaadhaar/submit-otp",
             needs: "client_id",
         },
-
-
         // bank-statement part
         "/bank-statement-analyzer/upload": {
             nextStep: "/bank-statement-analyzer/report-fetch",
@@ -263,6 +260,10 @@ export default function ServiceDynamicPage({ params }) {
             label: "Get AIS",
             needs: "client_id"
         },
+        "/bank/statement/upload": {
+            nextStep: "bank/statement/download",
+            needs: "client_id",
+        },
     };
     const refIds = useRef({
         client_id: "",
@@ -421,8 +422,11 @@ export default function ServiceDynamicPage({ params }) {
 
             setResponse(result);
 
+            console.log("sssssssssssssssssssssss",service?.endpoint);
 
             const flow = apiFlowMap[`/${service.endpoint}`];
+            console.log(flow);
+            
 
             if (result.success && flow?.needs) {
                 const idKey = flow.needs;
