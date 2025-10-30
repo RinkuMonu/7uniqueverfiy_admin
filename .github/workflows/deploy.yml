@@ -18,22 +18,23 @@ jobs:
         with:
           node-version: '20'
 
-      # OPTIONAL sanity check: make sure build works in CI before touching server
+      # 1. Make sure code actually builds before touching server
       - name: ✅ Install & Build (CI sanity check)
         run: |
           npm install --legacy-peer-deps
           npm run build
 
-      # 📦 Create tarball of the whole project EXCEPT junk
+      # 2. Pack repo to send to server
       - name: 📦 Create Release Archive
         run: |
           tar \
             --exclude='./node_modules' \
             --exclude='./.git' \
             --exclude='.DS_Store' \
+            --exclude='./.env' \
             -czvf dashboard.tar.gz . || true
 
-      # 🚀 Upload build archive to EC2 using SSH KEY (not password)
+      # 3. Upload archive to server using SSH key (not password)
       - name: 🚀 Upload Archive to EC2
         uses: appleboy/scp-action@master
         with:
@@ -44,8 +45,8 @@ jobs:
           source: "dashboard.tar.gz"
           target: "/home/admin7uniqver/"
 
-      # 🔁 SSH into EC2, deploy, install, build again there, restart PM2
-      - name: 🔄 Build & Restart App on EC2 via PM2
+      # 4. SSH in, deploy code, build prod, run via PM2
+      - name: 🔄 Build & Restart Dashboard on EC2 with PM2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_SSH_HOST }}
@@ -63,7 +64,7 @@ jobs:
             mkdir -p /home/admin7uniqver/deploy_backups_dashboard
             cp -r /home/admin7uniqver/7uniqueverfiy_admin /home/admin7uniqver/deploy_backups_dashboard/7uniqueverfiy_admin_$timestamp || true
 
-            echo "🧹 Clean old code (keep .env if you have it)"
+            echo "🧹 Clean old code (keep .env and node_modules)"
             find . -mindepth 1 -maxdepth 1 \
               ! -name '.env' \
               ! -name 'node_modules' \
@@ -76,13 +77,13 @@ jobs:
             echo "📦 Install deps on server"
             npm install --legacy-peer-deps
 
-            echo "🏗 Rebuild Next.js on server (SSR build)"
+            echo "🏗 Build production Next.js"
             npm run build
 
-            echo "🔁 Restart PM2 process for dashboard"
-            pm2 restart next-dashboard-3001 || pm2 start ecosystem.config.js --name next-dashboard-3001
+            echo "🚀 (Re)start PM2 process 'dashboard-admin'"
+            pm2 restart api.7uniqueverfiy.com || pm2 start "npm run start" --name api.7uniqueverfiy.com
 
-            echo "💾 Save PM2 startup"
+            echo "💾 Save PM2 boot config"
             pm2 save
 
-            echo "✅ Dashboard deployed and PM2 restarted"
+            echo "✅ Dashboard deployed and running under PM2 as 'dashboard-admin'"
