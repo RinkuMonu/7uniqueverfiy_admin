@@ -81,7 +81,7 @@ jobs:
             npm run build
 
             echo "🚀 (Re)start PM2 process 'dashboard-admin'"
-            pm2 restart api.7uniqueverfiy.com || pm2 start "npm run start" --name api.7uniqueverfiy.com
+            pm2 restart admin.7uniqueverfiy.com || pm2 start "npm run start" --name admin.7uniqueverfiy.com
 
             echo "💾 Save PM2 boot config"
             pm2 save
