@@ -1,4 +1,4 @@
-name: Deploy Next.js SSR App via PM2
+name: Deploy Next.js SSR Dashboard to AWS EC2
 
 on:
   push:
@@ -6,38 +6,83 @@ on:
       - main
 
 jobs:
-  deploy:
+  deploy-dashboard:
     runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v3
 
-      - name: 🛠️ Setup Node.js
+      - name: 🛠 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: 🚀 Upload Project Files to Server
+      # OPTIONAL sanity check: make sure build works in CI before touching server
+      - name: ✅ Install & Build (CI sanity check)
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+
+      # 📦 Create tarball of the whole project EXCEPT junk
+      - name: 📦 Create Release Archive
+        run: |
+          tar \
+            --exclude='./node_modules' \
+            --exclude='./.git' \
+            --exclude='.DS_Store' \
+            -czvf dashboard.tar.gz . || true
+
+      # 🚀 Upload build archive to EC2 using SSH KEY (not password)
+      - name: 🚀 Upload Archive to EC2
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "."
-          target: "/home/adminunv/public_html/7verifyDashboard-main"
+          host: ${{ secrets.AWS_SSH_HOST }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          port: ${{ secrets.AWS_SSH_PORT }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          source: "dashboard.tar.gz"
+          target: "/home/admin7uniqver/"
 
-      - name: 🔄 Build & Restart App via PM2 using ecosystem.config.js
+      # 🔁 SSH into EC2, deploy, install, build again there, restart PM2
+      - name: 🔄 Build & Restart App on EC2 via PM2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.AWS_SSH_HOST }}
+          username: ${{ secrets.AWS_SSH_USER }}
+          port: ${{ secrets.AWS_SSH_PORT }}
+          key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            cd /home/adminunv/public_html/7verifyDashboard-main
+            set -e
+
+            echo "📂 cd into live dashboard dir"
+            cd /home/admin7uniqver/7uniqueverfiy_admin
+
+            echo "🛡 Take backup before deploy"
+            timestamp=$(date +%Y%m%d_%H%M%S)
+            mkdir -p /home/admin7uniqver/deploy_backups_dashboard
+            cp -r /home/admin7uniqver/7uniqueverfiy_admin /home/admin7uniqver/deploy_backups_dashboard/7uniqueverfiy_admin_$timestamp || true
+
+            echo "🧹 Clean old code (keep .env if you have it)"
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name '.env' \
+              ! -name 'node_modules' \
+              -exec rm -rf {} +
+
+            echo "📦 Extract new dashboard.tar.gz"
+            tar -xzvf /home/admin7uniqver/dashboard.tar.gz -C .
+            rm /home/admin7uniqver/dashboard.tar.gz
+
+            echo "📦 Install deps on server"
             npm install --legacy-peer-deps
+
+            echo "🏗 Rebuild Next.js on server (SSR build)"
             npm run build
-            pm2 delete next-dashboard-3001 || true
-            pm2 start ecosystem.config.js
+
+            echo "🔁 Restart PM2 process for dashboard"
+            pm2 restart next-dashboard-3001 || pm2 start ecosystem.config.js --name next-dashboard-3001
+
+            echo "💾 Save PM2 startup"
+            pm2 save
+
+            echo "✅ Dashboard deployed and PM2 restarted"
