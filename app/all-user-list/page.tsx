@@ -41,6 +41,7 @@ const serviceIcons = {
   "Billing": <FaMoneyBillWave className="mr-2 text-red-500" />
 };
 
+
 export default function AllUserListPage() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
