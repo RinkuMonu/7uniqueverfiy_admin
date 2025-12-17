@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "@/components/service/axiosInstance";
 import { toast } from "react-toastify";
 import { Loader2 } from "lucide-react";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { FiDownload, FiCalendar, FiSearch, FiBarChart2 } from "react-icons/fi";
 import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
@@ -40,11 +40,35 @@ export default function UsagesPage() {
     }
   };
 
-  const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(usageData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "UsageReport");
-    XLSX.writeFile(wb, "UsageReport.xlsx");
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("UsageReport");
+
+    // 👉 Auto columns from usageData keys
+    if (usageData.length > 0) {
+      worksheet.columns = Object.keys(usageData[0]).map((key) => ({
+        header: key.toUpperCase(),
+        key: key,
+        width: 20,
+      }));
+    }
+
+    // 👉 Add rows
+    usageData.forEach((row) => {
+      worksheet.addRow(row);
+    });
+
+    // 👉 Download in browser
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "UsageReport.xlsx";
+    link.click();
   };
 
   return (
@@ -189,18 +213,18 @@ export default function UsagesPage() {
             <div className="card-body">
               <div className="table-responsive ">
                 <table className="table text-nowrap w-full">
-                  <thead className="brandorange-bg-light"><tr className="text-left">
-
-                    {["Service", "Hit Count", "Total Charges", "Last Used"].map(header => (
-                      <th
-                        key={header}
-                        className="p-3 md:p-4 text-left text-xs font-semibold  uppercase"
-                      >
-                        {header}
-                      </th>
-                    ))}
-
-                  </tr> </thead>
+                  <thead className="brandorange-bg-light">
+                    <tr className="text-left">
+                      {["Service", "Hit Count", "Total Charges", "Last Used"].map(header => (
+                        <th
+                          key={header}
+                          className="p-3 md:p-4 text-left text-xs font-semibold  uppercase"
+                        >
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
 
                   <tbody className="">
                     {usageData.length ? (
@@ -231,34 +255,34 @@ export default function UsagesPage() {
                   </tbody>
 
                 </table>
-             {!loading && totalPages >= 1 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "20px",
-            }}
-          >
-            <Button
-              disabled={page === 1}
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
-              variant="outline"
-            >
-              Previous
-            </Button>
-            <span>
-              Page {page} of {totalPages}
-            </span>
-            <Button
-              disabled={page === totalPages}
-              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        )}
+                {!loading && totalPages >= 1 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: "20px",
+                    }}
+                  >
+                    <Button
+                      disabled={page === 1}
+                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                      variant="outline"
+                    >
+                      Previous
+                    </Button>
+                    <span>
+                      Page {page} of {totalPages}
+                    </span>
+                    <Button
+                      disabled={page === totalPages}
+                      onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                      variant="outline"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
               </div> </div>
           </div>
 

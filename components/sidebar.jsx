@@ -247,7 +247,7 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
           <div className="h-16 px-6 border-b border-blue-100">
             <div className="">
               <div className="w-full bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg ">
-                <Image src={logo} width={20} height={20} alt="logo" className="mx-auto" />
+                <Image src={logo} width={20} height={20} alt="logo" className="mx-auto" priority />
               </div>
               {/* <div>
                 <h1 className="font-semibold text-gray-900">Dashboard</h1>
@@ -333,7 +333,15 @@ export function Sidebar({ isOpen = true, onToggle, onNavigate }) {
         <div className={cn("h-16  border-b border-gray-100", isOpen ? "" : "")}>
           <div className="flex items-center h-16">
             {/* <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center"> */}
-            <Image src={logo} width={100} height={100} alt="logo" className="mx-auto " />
+            <Image
+              src={logo}
+              alt="7Unique Verify Logo"
+              width={100}
+              height={100}
+              priority
+              className="mx-auto"
+            />
+
             {/* <i className="bi bi-lightning-fill text-white text-sm"></i> */}
             {/* </div> */}
             {isOpen && (
