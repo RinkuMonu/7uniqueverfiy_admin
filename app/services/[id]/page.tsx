@@ -310,6 +310,17 @@ export default function ServiceDynamicPage({ params }) {
       nextStep: "bank/statement/download",
       needs: "client_id",
     },
+
+    //aggregator apis
+    "/account-aggregator-v2/init": {
+      nextStep: "/account-aggregator-v2/fetch-json-report",
+      needs: "client_id",
+    },
+    "/account-aggregator-v2/fetch-json-report": {
+      nextStep: "",
+      needs: "client_id",
+    },
+
   };
 
   const refIds = useRef({
@@ -398,6 +409,53 @@ export default function ServiceDynamicPage({ params }) {
     }
   }, [id]);
 
+  useEffect(() => {
+    // agar current service AA report fetch hai
+    if (service?.endpoint === "account-aggregator-v2/fetch-json-report") {
+      const fetchAAReport = async () => {
+        try {
+          setLoading(true);
+          // backend ko hit karo jo client_id se report fetch karega
+          const res = await axios.post(
+            "https://admin.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
+            { client_id: refIds.current.client_id },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "client-id": admin?.environment_mode
+                  ? admin.production.authKey
+                  : admin.credentials.authKey,
+              },
+            }
+          );
+
+          setResponse(res.data);
+
+          const Swal = (await import("sweetalert2")).default;
+          Swal.fire({
+            icon: res.data.success ? "success" : "error",
+            text: res.data.message || "AA JSON report fetched",
+          });
+        } catch (err) {
+          const Swal = (await import("sweetalert2")).default;
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text:
+              err?.response?.data?.message ||
+              err?.message ||
+              "Failed to fetch AA report",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchAAReport();
+    }
+  }, [service]);
+
+
   // FORM FIELD CHANGE
   const handleChange = (e) => {
     const { name, type, value, files } = e.target;
@@ -478,6 +536,18 @@ export default function ServiceDynamicPage({ params }) {
       // if success, refresh admin wallet/limits etc
       if (result.success) {
         dispatch(fetchAdminDetails());
+      }
+
+      if (service.endpoint === "account-aggregator-v2/init" && result.success) {
+        const client_id = result.data?.client_id;
+        const redirect_url = result.data?.redirect_url;
+
+        // store client_id in refIds for future fetch
+        refIds.current.client_id = client_id;
+
+        // 🔥 Redirect user to Surepass consent page
+        window.location.href = redirect_url;
+        return; // aur function yahi end karo, kyunki user redirect ho gaya
       }
 
       setResponse(result);
