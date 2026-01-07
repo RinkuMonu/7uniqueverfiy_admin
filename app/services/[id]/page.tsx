@@ -465,6 +465,8 @@ const [isRedirecting, setIsRedirecting] = useState(false);
       name: "rahul",
     };
 
+    
+
     console.log("Payload being sent =", payload);
 
     const res = await axios.post(
