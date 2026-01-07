@@ -478,7 +478,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
         "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
         // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
         { 
-          client_id: localStorage.getItem("aa_client_id")
+          client_id: "rahulsecret234373636637"
         },
         {
           headers: {
