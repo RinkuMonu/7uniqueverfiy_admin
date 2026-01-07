@@ -40,6 +40,7 @@ export default function ServiceDynamicPage({ params }) {
   const [loading, setLoading] = useState(false);
 // ✅ ADD HERE - after existing state variables
 const [aaClientId, setAaClientId] = useState("");
+console.log("aaClientId = ",aaClientId);
 const [isAaCallback, setIsAaCallback] = useState(false);
 const [isRedirecting, setIsRedirecting] = useState(false);
   const hiddenFields = ["client_id", "transaction_id", "request_id"];
@@ -437,6 +438,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
           if (serviceData.endpoint === "account-aggregator-v2/fetch-json-report") {
             // Check localStorage for client_id
             const savedClientId = localStorage.getItem("aa_client_id");
+            console.log("savedClientId = ",savedClientId);
             if (savedClientId) {
               setAaClientId(savedClientId);
               // Auto-fetch if it's a callback
@@ -452,6 +454,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
 
     // ✅ ✅ ✅ REPLACE THE ABOVE useEffect WITH THIS NEW FUNCTION
   const fetchAAReport = async (clientId) => {
+    console.log("client id = ",clientId);
     try {
       setLoading(true);
       
@@ -517,6 +520,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
   // Keep only this useEffect for auto-fetch
   useEffect(() => {
     if (service?.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && isAaCallback) {
+      console.log("line 522 = ",aaClientId);
       fetchAAReport(aaClientId);
     }
   }, [service, aaClientId, isAaCallback]);
@@ -930,7 +934,7 @@ if (isRedirecting) {
                 margin: "10px 0px",
               }}
             >
-{service.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && (
+              {service.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && (
                 <button
                   type="button"
                   onClick={() => fetchAAReport(aaClientId)}
