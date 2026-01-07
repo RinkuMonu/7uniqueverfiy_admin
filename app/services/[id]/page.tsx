@@ -38,7 +38,10 @@ export default function ServiceDynamicPage({ params }) {
   const [formData, setFormData] = useState({});
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-
+// ✅ ADD HERE - after existing state variables
+const [aaClientId, setAaClientId] = useState("");
+const [isAaCallback, setIsAaCallback] = useState(false);
+const [isRedirecting, setIsRedirecting] = useState(false);
   const hiddenFields = ["client_id", "transaction_id", "request_id"];
 
   const shouldAutoCall =
@@ -322,6 +325,27 @@ export default function ServiceDynamicPage({ params }) {
     },
 
   };
+  // ✅ ✅ ✅ ADD THIS FUNCTION HERE
+  const checkForAaCallback = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientIdFromUrl = urlParams.get("client_id");
+    const aaCallback = urlParams.get("aa_callback");
+    
+    if (clientIdFromUrl || aaCallback === "true") {
+      setIsAaCallback(true);
+      if (clientIdFromUrl) {
+        setAaClientId(clientIdFromUrl);
+        // Clean URL
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, "", cleanUrl);
+      }
+    }
+  };
+
+  // ✅ ✅ ✅ ADD THIS USEEFFECT HERE
+  useEffect(() => {
+    checkForAaCallback();
+  }, []);
 
   const refIds = useRef({
     client_id: "",
@@ -400,61 +424,102 @@ export default function ServiceDynamicPage({ params }) {
   }, [service, shouldAutoCall, admin, formData]);
 
   // LOAD SERVICE META
+    // LOAD SERVICE META
   useEffect(() => {
     if (id) {
       axiosInstance
         .get(`/user/service/${id}`)
-        .then((res) => setService(res.data.data))
+        .then((res) => {
+          const serviceData = res.data.data;
+          setService(serviceData);
+          
+          // ✅ ✅ ✅ ADD THIS BLOCK HERE
+          if (serviceData.endpoint === "account-aggregator-v2/fetch-json-report") {
+            // Check localStorage for client_id
+            const savedClientId = localStorage.getItem("aa_client_id");
+            if (savedClientId) {
+              setAaClientId(savedClientId);
+              // Auto-fetch if it's a callback
+              if (isAaCallback) {
+                fetchAAReport(savedClientId);
+              }
+            }
+          }
+        })
         .catch((err) => console.error("Service fetch error:", err));
     }
-  }, [id]);
+  }, [id, isAaCallback]); // ✅ Add dependency here too
 
-  useEffect(() => {
-    // agar current service AA report fetch hai
-    if (service?.endpoint === "account-aggregator-v2/fetch-json-report") {
-      const fetchAAReport = async () => {
-        try {
-          setLoading(true);
-          // backend ko hit karo jo client_id se report fetch karega
-          const res = await axios.post(
-            "https://admin.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
-            { client_id: refIds.current.client_id },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "client-id": admin?.environment_mode
-                  ? admin.production.authKey
-                  : admin.credentials.authKey,
-              },
-            }
-          );
+    // ✅ ✅ ✅ REPLACE THE ABOVE useEffect WITH THIS NEW FUNCTION
+  const fetchAAReport = async (clientId) => {
+    try {
+      setLoading(true);
+      
+      const environment = admin?.environment_mode ? "production" : "credentials";
+      const envConfig = admin?.[environment];
 
-          setResponse(res.data);
+      if (!envConfig?.jwtSecret || !envConfig?.authKey) {
+        throw new Error("Missing JWT secret or auth key");
+      }
 
-          const Swal = (await import("sweetalert2")).default;
-          Swal.fire({
-            icon: res.data.success ? "success" : "error",
-            text: res.data.message || "AA JSON report fetched",
-          });
-        } catch (err) {
-          const Swal = (await import("sweetalert2")).default;
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text:
-              err?.response?.data?.message ||
-              err?.message ||
-              "Failed to fetch AA report",
-          });
-        } finally {
-          setLoading(false);
+      const token = await generateToken(
+        {
+          userId: admin._id,
+          email: admin.email,
+          role: admin.role,
+        },
+        envConfig?.jwtSecret
+      );
+
+      const res = await axios.post(
+        "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
+        // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
+        { 
+          client_id: clientId
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "client-id": envConfig.authKey,
+            authorization: `Bearer ${token}`,
+            "x-env": environment,
+          },
         }
-      };
+      );
 
-      fetchAAReport();
+      setResponse(res.data);
+      
+      const Swal = (await import("sweetalert2")).default;
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Account Aggregator report fetched successfully",
+        timer: 2000
+      });
+      
+      // Clean up
+      localStorage.removeItem("aa_client_id");
+      setAaClientId("");
+      setIsAaCallback(false);
+      
+    } catch (err) {
+      const Swal = (await import("sweetalert2")).default;
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err?.response?.data?.message || err?.message || "Failed to fetch report",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [service]);
+  };
 
+  // Keep only this useEffect for auto-fetch
+  useEffect(() => {
+    if (service?.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && isAaCallback) {
+      fetchAAReport(aaClientId);
+    }
+  }, [service, aaClientId, isAaCallback]);
 
   // FORM FIELD CHANGE
   const handleChange = (e) => {
@@ -538,16 +603,61 @@ export default function ServiceDynamicPage({ params }) {
         dispatch(fetchAdminDetails());
       }
 
-      if (service.endpoint === "account-aggregator-v2/init" && result.success) {
+            if (service.endpoint === "account-aggregator-v2/init" && result.success) {
         const client_id = result.data?.client_id;
         const redirect_url = result.data?.redirect_url;
-
-        // store client_id in refIds for future fetch
+        
+        if (!client_id || !redirect_url) {
+          throw new Error("No client_id or redirect_url received");
+        }
+        
+        // 1. Save client_id in localStorage
+        localStorage.setItem("aa_client_id", client_id);
+        setAaClientId(client_id);
         refIds.current.client_id = client_id;
-
-        // 🔥 Redirect user to Surepass consent page
-        window.location.href = redirect_url;
-        return; // aur function yahi end karo, kyunki user redirect ho gaya
+        
+        // 2. Show confirmation to user
+        const Swal = (await import("sweetalert2")).default;
+        const { isConfirmed } = await Swal.fire({
+          icon: "info",
+          title: "Redirecting to Bank Consent",
+          html: `
+            <div class="text-left">
+              <p class="mb-3">You will be redirected to the bank consent page.</p>
+              <div class="bg-blue-50 p-3 rounded mb-3">
+                <p class="text-sm"><strong>Client ID:</strong> ${client_id}</p>
+                <p class="text-xs text-gray-600">Save this ID for reference</p>
+              </div>
+              <p class="text-sm">After allowing access, you will return here automatically.</p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "Continue",
+          cancelButtonText: "Cancel",
+          allowOutsideClick: false
+        });
+        
+        if (isConfirmed) {
+          setIsRedirecting(true);
+          
+          // Show loading
+          Swal.fire({
+            title: "Redirecting...",
+            text: "Please wait",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+          
+          // Wait a bit then redirect
+          setTimeout(() => {
+            // REDIRECT TO THIRD-PARTY URL
+            window.location.href = redirect_url;
+          }, 1000);
+        }
+        
+        return;
       }
 
       setResponse(result);
@@ -641,7 +751,19 @@ export default function ServiceDynamicPage({ params }) {
       setLoading(false);
     }
   };
-
+if (isRedirecting) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+        <h2 className="text-xl font-semibold mb-2">Redirecting to Consent Page...</h2>
+        <p className="text-gray-600 text-center max-w-md">
+          Please wait while we redirect you to the bank consent page.
+          <br />
+          After allowing access, you will be automatically redirected back here with the report.
+        </p>
+      </div>
+    );
+  }
   if (!service)
     return <p className="text-center mt-10">Loading service details...</p>;
 
@@ -667,6 +789,36 @@ export default function ServiceDynamicPage({ params }) {
       </div>
 
       <div className="p-4 ">
+        {/* ✅ ✅ ✅ ACCOUNT AGGREGATOR SPECIAL SECTION START */}
+        {service.endpoint === "account-aggregator-v2/init" && aaClientId && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="font-semibold text-blue-800 mb-2">📋 Client ID Saved</h3>
+            <p className="text-blue-700 mb-2">
+              Your Client ID: <code className="bg-white px-2 py-1 rounded">{aaClientId}</code>
+            </p>
+            <p className="text-sm text-blue-600">
+              If you were redirected back from the consent page, the report will be fetched automatically.
+            </p>
+          </div>
+        )}
+        
+        {service.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h3 className="font-semibold text-green-800 mb-2">✅ Client ID Available</h3>
+            <p className="text-green-700 mb-3">
+              Click the button below to fetch the report using Client ID: 
+              <code className="bg-white px-2 py-1 rounded ml-2">{aaClientId}</code>
+            </p>
+            <button
+              onClick={() => fetchAAReport(aaClientId)}
+              disabled={loading}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
+            >
+              {loading ? "Fetching Report..." : "Fetch Report Now"}
+            </button>
+          </div>
+        )}
+        {/* ✅ ✅ ✅ ACCOUNT AGGREGATOR SPECIAL SECTION END */}
         {!shouldAutoCall && (
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-12 gap-4">
@@ -778,6 +930,25 @@ export default function ServiceDynamicPage({ params }) {
                 margin: "10px 0px",
               }}
             >
+{service.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && (
+                <button
+                  type="button"
+                  onClick={() => fetchAAReport(aaClientId)}
+                  disabled={loading}
+                  style={{
+                    marginRight: "10px",
+                    padding: "0.75rem 1.5rem",
+                    backgroundColor: "#10b981",
+                    color: "white",
+                    borderRadius: "0.5rem",
+                    fontWeight: "600",
+                    border: "none",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  Fetch Report
+                </button>
+              )}
               <button
                 type="submit"
                 style={{
