@@ -590,6 +590,8 @@ const [isRedirecting, setIsRedirecting] = useState(false);
       // const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
       const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
 
+
+      
       const res = await fetch(endpointUrl, {
         method: "POST",
         headers: {
