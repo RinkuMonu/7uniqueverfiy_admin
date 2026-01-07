@@ -40,7 +40,7 @@ export default function ServiceDynamicPage({ params }) {
   const [loading, setLoading] = useState(false);
 // ✅ ADD HERE - after existing state variables
 const [aaClientId, setAaClientId] = useState("");
-console.log("aaClientId = ",aaClientId);
+console.log("aaClientId line 43 = ",aaClientId);
 const [isAaCallback, setIsAaCallback] = useState(false);
 const [isRedirecting, setIsRedirecting] = useState(false);
   const hiddenFields = ["client_id", "transaction_id", "request_id"];
@@ -478,7 +478,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
         "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
         // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
         { 
-          client_id: clientId
+          client_id: localStorage.getItem("aa_client_id")
         },
         {
           headers: {
