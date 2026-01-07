@@ -454,35 +454,70 @@ const [isRedirecting, setIsRedirecting] = useState(false);
 
     // ✅ ✅ ✅ REPLACE THE ABOVE useEffect WITH THIS NEW FUNCTION
   const fetchAAReport = async (clientId) => {
-    console.log("client id received =", clientId);
+    console.log("client id = ",clientId);
+    try {
+      setLoading(true);
+      
+      const environment = admin?.environment_mode ? "production" : "credentials";
+      const envConfig = admin?.[environment];
 
-    if (!clientId) {
-      throw new Error("Client ID is missing");
-    }
-
-    const payload = {
-      client_id: "rahulsecret234373636637",
-      name: "rahul",
-    };
-
-    
-
-    console.log("Payload being sent =", payload);
-
-    const res = await axios.post(
-      "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "client-id": envConfig.authKey,
-          authorization: `Bearer ${token}`,
-          "x-env": environment,
-        },
+      if (!envConfig?.jwtSecret || !envConfig?.authKey) {
+        throw new Error("Missing JWT secret or auth key");
       }
-    );
-  };
 
+      const token = await generateToken(
+        {
+          userId: admin._id,
+          email: admin.email,
+          role: admin.role,
+        },
+        envConfig?.jwtSecret
+      );
+      const payload = {
+        client_id: "rahulsecret234373636637",
+        name: "rahul",
+      };
+
+      const res = await axios.post(
+        "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
+        // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "client-id": envConfig.authKey,
+            authorization: `Bearer ${token}`,
+            "x-env": environment,
+          },
+        }
+      );
+
+      setResponse(res.data);
+      
+      const Swal = (await import("sweetalert2")).default;
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Account Aggregator report fetched successfully",
+        timer: 2000
+      });
+      
+      // Clean up
+      localStorage.removeItem("aa_client_id");
+      setAaClientId("");
+      setIsAaCallback(false);
+      
+    } catch (err) {
+      const Swal = (await import("sweetalert2")).default;
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err?.response?.data?.message || err?.message || "Failed to fetch report",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Keep only this useEffect for auto-fetch
   useEffect(() => {
@@ -557,7 +592,7 @@ const [isRedirecting, setIsRedirecting] = useState(false);
       const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
 
 
-
+      
       const res = await fetch(endpointUrl, {
         method: "POST",
         headers: {
