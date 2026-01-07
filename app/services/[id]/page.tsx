@@ -473,15 +473,14 @@ const [isRedirecting, setIsRedirecting] = useState(false);
         },
         envConfig?.jwtSecret
       );
-      const payload = {
-        client_id: "rahulsecret234373636637",
-        name: "rahul",
-      };
 
       const res = await axios.post(
         "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
         // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
-        payload,
+        { 
+          client_id: "rahulsecret234373636637",
+          name:"rahul"
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -591,8 +590,6 @@ const [isRedirecting, setIsRedirecting] = useState(false);
       // const endpointUrl = `http://localhost:5050/api/verify/${service.endpoint}`;
       const endpointUrl = `https://api.7uniqueverfiy.com/api/verify/${service.endpoint}`;
 
-
-      
       const res = await fetch(endpointUrl, {
         method: "POST",
         headers: {
