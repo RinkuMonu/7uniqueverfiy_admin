@@ -124,8 +124,11 @@ export default function ServiceDynamicPage({ params }) {
     const autoCall = async () => {
       try {
         const payload = {};
+        console.log("service = ",service);
+        console.log("formData = ",formData);
+
         service.fields.forEach((field) => {
-          payload[field.name] = formData[field.name] || "";
+          payload[field.name] = formData[field.name] || "abc";
         });
 
         const environment = admin?.environment_mode ? "production" : "credentials";
