@@ -326,28 +326,6 @@ const [isRedirecting, setIsRedirecting] = useState(false);
     },
 
   };
-  // ✅ ✅ ✅ ADD THIS FUNCTION HERE
-  const checkForAaCallback = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const clientIdFromUrl = urlParams.get("client_id");
-    const aaCallback = urlParams.get("aa_callback");
-    
-    if (clientIdFromUrl || aaCallback === "true") {
-      setIsAaCallback(true);
-      if (clientIdFromUrl) {
-        setAaClientId(clientIdFromUrl);
-        // Clean URL
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, "", cleanUrl);
-      }
-    }
-  };
-
-  // ✅ ✅ ✅ ADD THIS USEEFFECT HERE
-  useEffect(() => {
-    checkForAaCallback();
-  }, []);
-
   const refIds = useRef({
     client_id: "",
     transaction_id: "",
@@ -441,91 +419,69 @@ const [isRedirecting, setIsRedirecting] = useState(false);
             console.log("savedClientId = ",savedClientId);
             if (savedClientId) {
               setAaClientId(savedClientId);
-              // Auto-fetch if it's a callback
-              if (isAaCallback) {
-                fetchAAReport(savedClientId);
-              }
             }
           }
         })
         .catch((err) => console.error("Service fetch error:", err));
     }
-  }, [id, isAaCallback]); // ✅ Add dependency here too
+  }, [id]); // ✅ Add dependency here too
 
     // ✅ ✅ ✅ REPLACE THE ABOVE useEffect WITH THIS NEW FUNCTION
   const fetchAAReport = async (clientId) => {
-    console.log("client id = ",clientId);
-    try {
-      setLoading(true);
-      
-      const environment = admin?.environment_mode ? "production" : "credentials";
-      const envConfig = admin?.[environment];
+  if (!clientId) {
+    alert("Client ID missing");
+    return;
+  }
 
-      if (!envConfig?.jwtSecret || !envConfig?.authKey) {
-        throw new Error("Missing JWT secret or auth key");
+  try {
+    setLoading(true);
+
+    const environment = admin?.environment_mode ? "production" : "credentials";
+    const envConfig = admin?.[environment];
+
+    const token = await generateToken(
+      {
+        userId: admin._id,
+        email: admin.email,
+        role: admin.role,
+      },
+      envConfig.jwtSecret
+    );
+
+    const res = await axios.post(
+      "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
+       // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
+      { client_id: clientId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "client-id": envConfig.authKey,
+          authorization: `Bearer ${token}`,
+          "x-env": environment,
+        },
       }
+    );
 
-      const token = await generateToken(
-        {
-          userId: admin._id,
-          email: admin.email,
-          role: admin.role,
-        },
-        envConfig?.jwtSecret
-      );
+    setResponse(res.data);
 
-      const res = await axios.post(
-        "https://api.7uniqueverfiy.com/api/verify/account-aggregator-v2/fetch-json-report",
-        // "http://localhost:5050/api/verify/account-aggregator-v2/fetch-json-report",
-        { 
-          client_id: "rahulsecret234373636637",
-          name:"rahul"
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "client-id": envConfig.authKey,
-            authorization: `Bearer ${token}`,
-            "x-env": environment,
-          },
-        }
-      );
+    const Swal = (await import("sweetalert2")).default;
+    Swal.fire("Success", "AA report fetched successfully", "success");
 
-      setResponse(res.data);
-      
-      const Swal = (await import("sweetalert2")).default;
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Account Aggregator report fetched successfully",
-        timer: 2000
-      });
-      
-      // Clean up
-      localStorage.removeItem("aa_client_id");
-      setAaClientId("");
-      setIsAaCallback(false);
-      
-    } catch (err) {
-      const Swal = (await import("sweetalert2")).default;
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: err?.response?.data?.message || err?.message || "Failed to fetch report",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    // optional cleanup
+    localStorage.removeItem("aa_client_id");
+    setAaClientId("");
 
-  // Keep only this useEffect for auto-fetch
-  useEffect(() => {
-    if (service?.endpoint === "account-aggregator-v2/fetch-json-report" && aaClientId && isAaCallback) {
-      console.log("line 522 = ",aaClientId);
-      fetchAAReport(aaClientId);
-    }
-  }, [service, aaClientId, isAaCallback]);
-
+  } catch (err) {
+    const Swal = (await import("sweetalert2")).default;
+    Swal.fire(
+      "Error",
+      err?.response?.data?.message || "Failed to fetch report",
+      "error"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   // FORM FIELD CHANGE
   const handleChange = (e) => {
     const { name, type, value, files } = e.target;
