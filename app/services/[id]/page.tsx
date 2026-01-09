@@ -231,6 +231,9 @@ export default function ServiceDynamicPage({ params }) {
   };
 
   const handleChange = (e) => {
+    console.log("e.target 234 = ",e.target);
+    console.log("formData 234 = ",formData);
+
     const { name, type, value, files } = e.target;
     setFormData({
       ...formData,
@@ -283,6 +286,7 @@ export default function ServiceDynamicPage({ params }) {
       });
 
       const result = await res.json();
+      console.log("result line 289 = ",result);
       if (result.success) dispatch(fetchAdminDetails());
 
       if (service.endpoint === "account-aggregator-v2/init" && result.success) {
@@ -307,15 +311,21 @@ export default function ServiceDynamicPage({ params }) {
         }
         return;
       }
-
+      console.log("result line 313 = ",result);
       setResponse(result);
       const flow = apiFlowMap[`/${service.endpoint}`];
 
       if (result.success && flow?.needs) {
         const idKey = flow.needs;
+        console.log("line 319 result = ",result.data);
         const idValue = result.data?.data?.[idKey] || result.data?.[idKey];
 
         if (idKey && idValue) {
+          console.log("line 322");
+          console.log("idKey = ",idKey);
+
+          console.log("idValue = ",idValue);
+
           setFormData((prev) => ({ ...prev, [idKey]: idValue }));
           if (flow.nextStep) {
             const nextService = admin?.services.find(s => s.endpoint === flow.nextStep.replace(/^\//, ""));
